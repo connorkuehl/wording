@@ -3,10 +3,13 @@ package server
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/connorkuehl/wording/internal/view"
 	"github.com/connorkuehl/wording/internal/wording"
 )
 
@@ -22,6 +25,14 @@ type Server struct {
 func New(svc Service) *Server {
 	return &Server{
 		svc: svc,
+	}
+}
+
+func (s *Server) Home(w http.ResponseWriter, r *http.Request) {
+	_, err := io.Copy(w, strings.NewReader(view.Home()))
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
 	}
 }
 

@@ -21,6 +21,7 @@ func main() {
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
 
+	router.Get("/", srv.Home)
 	router.Get("/manage/{admin_token}", srv.ManageGame)
 	router.Post("/games", srv.CreateGame)
 
