@@ -77,7 +77,7 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Redirect(w, r, fmt.Sprintf("/manage/%s", game.AdminToken), http.StatusMovedPermanently)
+	http.Redirect(w, r, fmt.Sprintf("/manage/%s", game.AdminToken), http.StatusSeeOther)
 }
 
 func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {

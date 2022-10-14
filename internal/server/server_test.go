@@ -39,6 +39,6 @@ func TestCreateGame(t *testing.T) {
 
 	svr.CreateGame(w, r)
 
-	assert.Equal(t, http.StatusMovedPermanently, w.Code)
+	assert.Equal(t, http.StatusSeeOther, w.Code)
 	assert.DeepEqual(t, []string{"/manage/wretched-apostle"}, w.Result().Header["Location"])
 }
