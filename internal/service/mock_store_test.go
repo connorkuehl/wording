@@ -24,13 +24,13 @@ func (_m *MockStore) EXPECT() *MockStore_Expecter {
 	return &MockStore_Expecter{mock: &_m.Mock}
 }
 
-// CreateGame provides a mock function with given fields: ctx, adminToken, answer, guessLimit, expiresAt
-func (_m *MockStore) CreateGame(ctx context.Context, adminToken string, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error) {
-	ret := _m.Called(ctx, adminToken, answer, guessLimit, expiresAt)
+// CreateGame provides a mock function with given fields: ctx, adminToken, token, answer, guessLimit, expiresAt
+func (_m *MockStore) CreateGame(ctx context.Context, adminToken string, token string, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error) {
+	ret := _m.Called(ctx, adminToken, token, answer, guessLimit, expiresAt)
 
 	var r0 *wording.Game
-	if rf, ok := ret.Get(0).(func(context.Context, string, string, int, time.Time) *wording.Game); ok {
-		r0 = rf(ctx, adminToken, answer, guessLimit, expiresAt)
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, int, time.Time) *wording.Game); ok {
+		r0 = rf(ctx, adminToken, token, answer, guessLimit, expiresAt)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*wording.Game)
@@ -38,8 +38,8 @@ func (_m *MockStore) CreateGame(ctx context.Context, adminToken string, answer s
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string, int, time.Time) error); ok {
-		r1 = rf(ctx, adminToken, answer, guessLimit, expiresAt)
+	if rf, ok := ret.Get(1).(func(context.Context, string, string, string, int, time.Time) error); ok {
+		r1 = rf(ctx, adminToken, token, answer, guessLimit, expiresAt)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -55,16 +55,17 @@ type MockStore_CreateGame_Call struct {
 // CreateGame is a helper method to define mock.On call
 //  - ctx context.Context
 //  - adminToken string
+//  - token string
 //  - answer string
 //  - guessLimit int
 //  - expiresAt time.Time
-func (_e *MockStore_Expecter) CreateGame(ctx interface{}, adminToken interface{}, answer interface{}, guessLimit interface{}, expiresAt interface{}) *MockStore_CreateGame_Call {
-	return &MockStore_CreateGame_Call{Call: _e.mock.On("CreateGame", ctx, adminToken, answer, guessLimit, expiresAt)}
+func (_e *MockStore_Expecter) CreateGame(ctx interface{}, adminToken interface{}, token interface{}, answer interface{}, guessLimit interface{}, expiresAt interface{}) *MockStore_CreateGame_Call {
+	return &MockStore_CreateGame_Call{Call: _e.mock.On("CreateGame", ctx, adminToken, token, answer, guessLimit, expiresAt)}
 }
 
-func (_c *MockStore_CreateGame_Call) Run(run func(ctx context.Context, adminToken string, answer string, guessLimit int, expiresAt time.Time)) *MockStore_CreateGame_Call {
+func (_c *MockStore_CreateGame_Call) Run(run func(ctx context.Context, adminToken string, token string, answer string, guessLimit int, expiresAt time.Time)) *MockStore_CreateGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(int), args[4].(time.Time))
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string), args[4].(int), args[5].(time.Time))
 	})
 	return _c
 }

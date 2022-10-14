@@ -23,21 +23,24 @@ func TestCreateGame(t *testing.T) {
 	thisInstant := now()
 
 	tokGen := NewMockTokenGenerator(t)
+	admTokGen := NewMockTokenGenerator(t)
 	mockStore := NewMockStore(t)
 
-	tokGen.EXPECT().NewToken().Return("wretched-apostle")
+	admTokGen.EXPECT().NewToken().Return("wretched-apostle")
+	tokGen.EXPECT().NewToken().Return("hungry-hippo")
 
 	mockStore.EXPECT().
-		CreateGame(mock.Anything, "wretched-apostle", "answer", 3, thisInstant.Add(24*time.Hour)).
+		CreateGame(mock.Anything, "wretched-apostle", "hungry-hippo", "answer", 3, thisInstant.Add(24*time.Hour)).
 		Return(&wording.Game{
 			AdminToken: "wretched-apostle",
+			Token:      "hungry-hippo",
 			Answer:     "answer",
 			ExpiresAt:  thisInstant.Add(24 * time.Hour),
 			GuessLimit: 3,
 		}, nil).
 		Once()
 
-	svc := New(mockStore, tokGen, nil)
+	svc := New(mockStore, admTokGen, tokGen)
 
 	got, err := svc.CreateGame(
 		context.TODO(),
@@ -49,6 +52,7 @@ func TestCreateGame(t *testing.T) {
 
 	want := &wording.Game{
 		AdminToken: "wretched-apostle",
+		Token:      "hungry-hippo",
 		Answer:     "answer",
 		ExpiresAt:  thisInstant.Add(24 * time.Hour),
 		GuessLimit: 3,

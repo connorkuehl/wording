@@ -41,10 +41,11 @@ func (s *PostgresStore) Close() error {
 	return s.db.Close()
 }
 
-func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error) {
+func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, token, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error) {
 	query := `
 	INSERT INTO games (
 		admin_token,
+		token,
 		expires_at,
 		answer,
 		guess_limit
@@ -52,11 +53,12 @@ func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, answer strin
 		$1,
 		$2,
 		$3,
-		$4
+		$4,
+		$5
 	)
 	`
 
-	_, err := s.db.ExecContext(ctx, query, adminToken, expiresAt, answer, guessLimit)
+	_, err := s.db.ExecContext(ctx, query, adminToken, token, expiresAt, answer, guessLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -72,16 +74,19 @@ func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, answer strin
 }
 
 func (s *PostgresStore) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
-	query := `SELECT expires_at, answer, guess_limit FROM games WHERE admin_token = $1`
+	query := `SELECT token, expires_at, answer, guess_limit FROM games WHERE admin_token = $1`
 
 	var game wording.Game
-	err := s.db.QueryRowContext(ctx, query, adminToken).Scan(&game.ExpiresAt, &game.Answer, &game.GuessLimit)
+	err := s.db.QueryRowContext(ctx, query, adminToken).
+		Scan(&game.Token, &game.ExpiresAt, &game.Answer, &game.GuessLimit)
 	if errors.Is(err, sql.ErrNoRows) {
 		err = ErrNotFound
 	}
 	if err != nil {
 		return nil, err
 	}
+
+	game.AdminToken = adminToken
 
 	return &game, nil
 }

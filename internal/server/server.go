@@ -103,7 +103,8 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 	bodyFmt := `<html>
 	<p>The answer is <b>%s</b>. Players will have %d guesses.</p>
 	<p>The game expires at %s.</p>
+	<p>Player link: /game/%s</p>
 	</html>`
 
-	w.Write([]byte(fmt.Sprintf(bodyFmt, game.Answer, game.GuessLimit, game.ExpiresAt.Format(time.UnixDate))))
+	w.Write([]byte(fmt.Sprintf(bodyFmt, game.Answer, game.GuessLimit, game.ExpiresAt.Format(time.UnixDate), game.Token)))
 }
