@@ -1,3 +1,11 @@
 <html>
-    <h1>It works!</h1>
+    <form action="/games" method="post">
+        <label for="answer">Answer:</label>
+        <input type="text" name="answer"/><br />
+        <label for="num_attempts">Guesses allowed:</label>
+        <input type="text" name="num_attempts"/><br />
+        <label for="expires_after">Expires after:</label>
+        <input type="text" name="expires_after" />
+        <input type="submit" value="Create game" />
+    </form>
 </html>
