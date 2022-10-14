@@ -3,12 +3,15 @@ package main
 import (
 	"flag"
 	"log"
+	"math/rand"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
+	"github.com/connorkuehl/wording/internal/generator"
 	"github.com/connorkuehl/wording/internal/server"
 	"github.com/connorkuehl/wording/internal/service"
 	"github.com/connorkuehl/wording/internal/store"
@@ -29,7 +32,10 @@ func main() {
 	}
 	defer store.Close()
 
-	svc := service.New(store, nil)
+	rand.Seed(time.Now().UnixNano())
+	tokenGenerator := generator.NewTokenGenerator(rand.Int)
+
+	svc := service.New(store, tokenGenerator)
 	srv := server.New(svc)
 
 	router := chi.NewRouter()
