@@ -21,6 +21,7 @@ import (
 type Service interface {
 	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
+	GameByToken(ctx context.Context, token string) (*wording.Game, error)
 }
 
 type Server struct {
@@ -109,6 +110,30 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 		Answer:         game.Answer,
 		GuessesAllowed: game.GuessLimit,
 		ExpiresAt:      game.ExpiresAt,
+	}.RenderTo(w)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+}
+
+func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
+	ctx := context.TODO()
+
+	token := chi.URLParam(r, "token")
+	if token == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	game, err := s.svc.GameByToken(ctx, token)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	err = view.PlayGame{
+		Length: len(game.Answer),
 	}.RenderTo(w)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

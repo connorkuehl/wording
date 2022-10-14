@@ -90,3 +90,21 @@ func (s *PostgresStore) Game(ctx context.Context, adminToken string) (*wording.G
 
 	return &game, nil
 }
+
+func (s *PostgresStore) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
+	query := `SELECT admin_token, expires_at, answer, guess_limit FROM games WHERE token = $1`
+
+	game := wording.Game{
+		Token: token,
+	}
+	err := s.db.QueryRowContext(ctx, query, token).
+		Scan(&game.AdminToken, &game.ExpiresAt, &game.Answer, &game.GuessLimit)
+	if errors.Is(err, sql.ErrNoRows) {
+		err = ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &game, nil
+}

@@ -122,6 +122,53 @@ func (_c *MockStore_Game_Call) Return(_a0 *wording.Game, _a1 error) *MockStore_G
 	return _c
 }
 
+// GameByToken provides a mock function with given fields: ctx, token
+func (_m *MockStore) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
+	ret := _m.Called(ctx, token)
+
+	var r0 *wording.Game
+	if rf, ok := ret.Get(0).(func(context.Context, string) *wording.Game); ok {
+		r0 = rf(ctx, token)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*wording.Game)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, token)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_GameByToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GameByToken'
+type MockStore_GameByToken_Call struct {
+	*mock.Call
+}
+
+// GameByToken is a helper method to define mock.On call
+//  - ctx context.Context
+//  - token string
+func (_e *MockStore_Expecter) GameByToken(ctx interface{}, token interface{}) *MockStore_GameByToken_Call {
+	return &MockStore_GameByToken_Call{Call: _e.mock.On("GameByToken", ctx, token)}
+}
+
+func (_c *MockStore_GameByToken_Call) Run(run func(ctx context.Context, token string)) *MockStore_GameByToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockStore_GameByToken_Call) Return(_a0 *wording.Game, _a1 error) *MockStore_GameByToken_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 type mockConstructorTestingTNewMockStore interface {
 	mock.TestingT
 	Cleanup(func())

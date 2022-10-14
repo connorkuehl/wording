@@ -13,6 +13,7 @@ var now = time.Now
 type Store interface {
 	CreateGame(ctx context.Context, adminToken, token, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
+	GameByToken(ctx context.Context, token string) (*wording.Game, error)
 }
 
 //go:generate mockery --name TokenGenerator --case underscore --with-expecter --testonly --inpackage
@@ -46,4 +47,8 @@ func (s *Service) CreateGame(
 
 func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
 	return s.store.Game(ctx, adminToken)
+}
+
+func (s *Service) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
+	return s.store.GameByToken(ctx, token)
 }
