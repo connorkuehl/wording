@@ -17,8 +17,8 @@ func (_m *MockTokenGenerator) EXPECT() *MockTokenGenerator_Expecter {
 	return &MockTokenGenerator_Expecter{mock: &_m.Mock}
 }
 
-// Adjective provides a mock function with given fields:
-func (_m *MockTokenGenerator) Adjective() string {
+// NewToken provides a mock function with given fields:
+func (_m *MockTokenGenerator) NewToken() string {
 	ret := _m.Called()
 
 	var r0 string
@@ -31,60 +31,24 @@ func (_m *MockTokenGenerator) Adjective() string {
 	return r0
 }
 
-// MockTokenGenerator_Adjective_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Adjective'
-type MockTokenGenerator_Adjective_Call struct {
+// MockTokenGenerator_NewToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'NewToken'
+type MockTokenGenerator_NewToken_Call struct {
 	*mock.Call
 }
 
-// Adjective is a helper method to define mock.On call
-func (_e *MockTokenGenerator_Expecter) Adjective() *MockTokenGenerator_Adjective_Call {
-	return &MockTokenGenerator_Adjective_Call{Call: _e.mock.On("Adjective")}
+// NewToken is a helper method to define mock.On call
+func (_e *MockTokenGenerator_Expecter) NewToken() *MockTokenGenerator_NewToken_Call {
+	return &MockTokenGenerator_NewToken_Call{Call: _e.mock.On("NewToken")}
 }
 
-func (_c *MockTokenGenerator_Adjective_Call) Run(run func()) *MockTokenGenerator_Adjective_Call {
+func (_c *MockTokenGenerator_NewToken_Call) Run(run func()) *MockTokenGenerator_NewToken_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run()
 	})
 	return _c
 }
 
-func (_c *MockTokenGenerator_Adjective_Call) Return(_a0 string) *MockTokenGenerator_Adjective_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
-// Noun provides a mock function with given fields:
-func (_m *MockTokenGenerator) Noun() string {
-	ret := _m.Called()
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
-// MockTokenGenerator_Noun_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Noun'
-type MockTokenGenerator_Noun_Call struct {
-	*mock.Call
-}
-
-// Noun is a helper method to define mock.On call
-func (_e *MockTokenGenerator_Expecter) Noun() *MockTokenGenerator_Noun_Call {
-	return &MockTokenGenerator_Noun_Call{Call: _e.mock.On("Noun")}
-}
-
-func (_c *MockTokenGenerator_Noun_Call) Run(run func()) *MockTokenGenerator_Noun_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *MockTokenGenerator_Noun_Call) Return(_a0 string) *MockTokenGenerator_Noun_Call {
+func (_c *MockTokenGenerator_NewToken_Call) Return(_a0 string) *MockTokenGenerator_NewToken_Call {
 	_c.Call.Return(_a0)
 	return _c
 }

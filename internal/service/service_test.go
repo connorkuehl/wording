@@ -17,8 +17,7 @@ func TestCreateGame(t *testing.T) {
 	tokGen := NewMockTokenGenerator(t)
 	mockStore := NewMockStore(t)
 
-	tokGen.EXPECT().Adjective().Return("wretched")
-	tokGen.EXPECT().Noun().Return("apostle")
+	tokGen.EXPECT().NewToken().Return("wretched-apostle")
 
 	mockStore.EXPECT().
 		CreateGame(mock.Anything, "wretched-apostle", "answer", 3, now.Add(24*time.Hour)).
