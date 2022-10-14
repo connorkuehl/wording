@@ -19,7 +19,7 @@ import (
 
 //go:generate mockery --name Service --case underscore --with-expecter --testonly --inpackage
 type Service interface {
-	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error)
+	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 }
 
@@ -44,39 +44,35 @@ func (s *Server) Home(w http.ResponseWriter, r *http.Request) {
 func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
-	// TODO
-	// This whole section of pulling query parameters out is awful.
-	keys, ok := r.URL.Query()["answer"]
-	if !ok || len(keys) == 0 {
-		http.Error(w, "answer is missing", http.StatusBadRequest)
-		return
-	}
-	answer := keys[0]
+	var (
+		answer       string
+		expiresAfter time.Duration
+		numAttempts  int
+	)
 
-	keys, ok = r.URL.Query()["guess_limit"]
-	if !ok || len(keys) == 0 {
-		http.Error(w, "guess_limit is missing", http.StatusBadRequest)
+	r.ParseForm()
+
+	answer = r.PostFormValue("answer")
+	if answer == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest)+" answer is missing", http.StatusBadRequest)
 		return
 	}
-	guessLimit, err := strconv.Atoi(keys[0])
+
+	d, err := time.ParseDuration(r.PostFormValue("expires_after"))
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(w, http.StatusText(http.StatusBadRequest)+" expires_after is missing", http.StatusBadRequest)
 		return
 	}
+	expiresAfter = d
 
-	keys, ok = r.URL.Query()["expires_at"]
-	if !ok || len(keys) == 0 {
-		http.Error(w, "expires_at is missing", http.StatusBadRequest)
-		return
-	}
-	expiresAt, err := strconv.ParseInt(keys[0], 10, 64)
+	i, err := strconv.Atoi(r.PostFormValue("num_attempts"))
 	if err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		http.Error(w, http.StatusText(http.StatusBadRequest)+" num_attempts is not a number", http.StatusBadRequest)
 		return
 	}
-	expiresAtTime := time.Unix(expiresAt, 0).UTC()
+	numAttempts = i
 
-	game, err := s.svc.CreateGame(ctx, answer, guessLimit, expiresAtTime)
+	game, err := s.svc.CreateGame(ctx, answer, numAttempts, expiresAfter)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

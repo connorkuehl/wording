@@ -1,9 +1,10 @@
 package server
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 	"time"
 
@@ -18,17 +19,18 @@ func TestCreateGame(t *testing.T) {
 	svc := NewMockService(t)
 	svr := New(svc)
 
-	w := httptest.NewRecorder()
-	r := httptest.NewRequest("POST", "/games", nil)
+	form := url.Values{
+		"answer":        {"potato"},
+		"expires_after": {(12 * time.Hour).String()},
+		"num_attempts":  {"6"},
+	}
 
-	q := r.URL.Query()
-	q.Add("answer", "potato")
-	q.Add("expires_at", fmt.Sprintf("%d", now.Add(12*time.Hour).Unix()))
-	q.Add("guess_limit", "6")
-	r.URL.RawQuery = q.Encode()
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("POST", "/games", strings.NewReader(form.Encode()))
+	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	svc.EXPECT().
-		CreateGame(mock.Anything, "potato", 6, now.Add(12*time.Hour).Truncate(time.Second)).
+		CreateGame(mock.Anything, "potato", 6, (12*time.Hour)).
 		Return(&wording.Game{
 			AdminToken: "wretched-apostle",
 			Answer:     "potato",
@@ -39,6 +41,6 @@ func TestCreateGame(t *testing.T) {
 
 	svr.CreateGame(w, r)
 
-	assert.Equal(t, http.StatusSeeOther, w.Code)
+	assert.Equal(t, http.StatusSeeOther, w.Code, w.Body)
 	assert.DeepEqual(t, []string{"/manage/wretched-apostle"}, w.Result().Header["Location"])
 }

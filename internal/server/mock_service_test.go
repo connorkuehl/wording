@@ -24,13 +24,13 @@ func (_m *MockService) EXPECT() *MockService_Expecter {
 	return &MockService_Expecter{mock: &_m.Mock}
 }
 
-// CreateGame provides a mock function with given fields: ctx, answer, guessLimit, expiresAt
-func (_m *MockService) CreateGame(ctx context.Context, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error) {
-	ret := _m.Called(ctx, answer, guessLimit, expiresAt)
+// CreateGame provides a mock function with given fields: ctx, answer, guessLimit, expiresAfter
+func (_m *MockService) CreateGame(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration) (*wording.Game, error) {
+	ret := _m.Called(ctx, answer, guessLimit, expiresAfter)
 
 	var r0 *wording.Game
-	if rf, ok := ret.Get(0).(func(context.Context, string, int, time.Time) *wording.Game); ok {
-		r0 = rf(ctx, answer, guessLimit, expiresAt)
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, time.Duration) *wording.Game); ok {
+		r0 = rf(ctx, answer, guessLimit, expiresAfter)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*wording.Game)
@@ -38,8 +38,8 @@ func (_m *MockService) CreateGame(ctx context.Context, answer string, guessLimit
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, int, time.Time) error); ok {
-		r1 = rf(ctx, answer, guessLimit, expiresAt)
+	if rf, ok := ret.Get(1).(func(context.Context, string, int, time.Duration) error); ok {
+		r1 = rf(ctx, answer, guessLimit, expiresAfter)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -56,14 +56,14 @@ type MockService_CreateGame_Call struct {
 //  - ctx context.Context
 //  - answer string
 //  - guessLimit int
-//  - expiresAt time.Time
-func (_e *MockService_Expecter) CreateGame(ctx interface{}, answer interface{}, guessLimit interface{}, expiresAt interface{}) *MockService_CreateGame_Call {
-	return &MockService_CreateGame_Call{Call: _e.mock.On("CreateGame", ctx, answer, guessLimit, expiresAt)}
+//  - expiresAfter time.Duration
+func (_e *MockService_Expecter) CreateGame(ctx interface{}, answer interface{}, guessLimit interface{}, expiresAfter interface{}) *MockService_CreateGame_Call {
+	return &MockService_CreateGame_Call{Call: _e.mock.On("CreateGame", ctx, answer, guessLimit, expiresAfter)}
 }
 
-func (_c *MockService_CreateGame_Call) Run(run func(ctx context.Context, answer string, guessLimit int, expiresAt time.Time)) *MockService_CreateGame_Call {
+func (_c *MockService_CreateGame_Call) Run(run func(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration)) *MockService_CreateGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(int), args[3].(time.Time))
+		run(args[0].(context.Context), args[1].(string), args[2].(int), args[3].(time.Duration))
 	})
 	return _c
 }
