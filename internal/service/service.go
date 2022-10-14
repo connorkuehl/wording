@@ -21,14 +21,16 @@ type TokenGenerator interface {
 }
 
 type Service struct {
-	store  Store
-	tokGen TokenGenerator
+	store               Store
+	adminTokenGenerator TokenGenerator
+	gameTokenGenerator  TokenGenerator
 }
 
-func New(store Store, tokGen TokenGenerator) *Service {
+func New(store Store, adminTokenGenerator, gameTokenGenerator TokenGenerator) *Service {
 	return &Service{
-		store:  store,
-		tokGen: tokGen,
+		store:               store,
+		adminTokenGenerator: adminTokenGenerator,
+		gameTokenGenerator:  gameTokenGenerator,
 	}
 }
 
@@ -39,7 +41,7 @@ func (s *Service) CreateGame(
 	expiresAfter time.Duration,
 ) (*wording.Game, error) {
 	expiresAt := now().Add(expiresAfter)
-	return s.store.CreateGame(ctx, s.tokGen.NewToken(), answer, guessLimit, expiresAt)
+	return s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), answer, guessLimit, expiresAt)
 }
 
 func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {

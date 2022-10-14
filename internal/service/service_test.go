@@ -37,7 +37,7 @@ func TestCreateGame(t *testing.T) {
 		}, nil).
 		Once()
 
-	svc := New(mockStore, tokGen)
+	svc := New(mockStore, tokGen, nil)
 
 	got, err := svc.CreateGame(
 		context.TODO(),

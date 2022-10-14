@@ -33,9 +33,10 @@ func main() {
 	defer store.Close()
 
 	rand.Seed(time.Now().UnixNano())
-	tokenGenerator := generator.NewHumanReadableGenerator(rand.Int)
+	adminTokenGenerator := generator.NewUUIDGenerator()
+	gameTokenGenerator := generator.NewHumanReadableGenerator(rand.Int)
 
-	svc := service.New(store, tokenGenerator)
+	svc := service.New(store, adminTokenGenerator, gameTokenGenerator)
 	srv := server.New(svc)
 
 	router := chi.NewRouter()
