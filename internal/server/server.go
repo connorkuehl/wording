@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -9,6 +10,9 @@ import (
 	"strings"
 	"time"
 
+	"github.com/go-chi/chi/v5"
+
+	"github.com/connorkuehl/wording/internal/store"
 	"github.com/connorkuehl/wording/internal/view"
 	"github.com/connorkuehl/wording/internal/wording"
 )
@@ -16,6 +20,7 @@ import (
 //go:generate mockery --name Service --case underscore --with-expecter --testonly --inpackage
 type Service interface {
 	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error)
+	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 }
 
 type Server struct {
@@ -81,5 +86,28 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
+	ctx := context.TODO()
 
+	adminToken := chi.URLParam(r, "admin_token")
+	if adminToken == "" {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	game, err := s.svc.Game(ctx, adminToken)
+	if errors.Is(err, store.ErrNotFound) {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	bodyFmt := `<html>
+	<p>The answer is <b>%s</b>. Players will have %d guesses.</p>
+	<p>The game expires at %s.</p>
+	</html>`
+
+	w.Write([]byte(fmt.Sprintf(bodyFmt, game.Answer, game.GuessLimit, game.ExpiresAt.Format(time.UnixDate))))
 }

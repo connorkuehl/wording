@@ -74,6 +74,53 @@ func (_c *MockStore_CreateGame_Call) Return(_a0 *wording.Game, _a1 error) *MockS
 	return _c
 }
 
+// Game provides a mock function with given fields: ctx, adminToken
+func (_m *MockStore) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
+	ret := _m.Called(ctx, adminToken)
+
+	var r0 *wording.Game
+	if rf, ok := ret.Get(0).(func(context.Context, string) *wording.Game); ok {
+		r0 = rf(ctx, adminToken)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*wording.Game)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, adminToken)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_Game_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Game'
+type MockStore_Game_Call struct {
+	*mock.Call
+}
+
+// Game is a helper method to define mock.On call
+//  - ctx context.Context
+//  - adminToken string
+func (_e *MockStore_Expecter) Game(ctx interface{}, adminToken interface{}) *MockStore_Game_Call {
+	return &MockStore_Game_Call{Call: _e.mock.On("Game", ctx, adminToken)}
+}
+
+func (_c *MockStore_Game_Call) Run(run func(ctx context.Context, adminToken string)) *MockStore_Game_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockStore_Game_Call) Return(_a0 *wording.Game, _a1 error) *MockStore_Game_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 type mockConstructorTestingTNewMockStore interface {
 	mock.TestingT
 	Cleanup(func())

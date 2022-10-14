@@ -39,4 +39,6 @@ func (s *Service) CreateGame(
 	return s.store.CreateGame(ctx, s.tokGen.NewToken(), answer, guessLimit, expiresAt)
 }
 
+func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
+	return s.store.Game(ctx, adminToken)
 }

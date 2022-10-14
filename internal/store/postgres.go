@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/connorkuehl/wording/internal/wording"
@@ -67,4 +68,19 @@ func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, answer strin
 	}
 
 	return game, nil
+}
+
+func (s *PostgresStore) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
+	query := `SELECT expires_at, answer, guess_limit FROM games WHERE admin_token = $1`
+
+	var game wording.Game
+	err := s.db.QueryRowContext(ctx, query, adminToken).Scan(&game.ExpiresAt, &game.Answer, &game.GuessLimit)
+	if errors.Is(err, sql.ErrNoRows) {
+		err = ErrNotFound
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return &game, nil
 }
