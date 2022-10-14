@@ -24,12 +24,14 @@ type Service interface {
 }
 
 type Server struct {
-	svc Service
+	baseURL string
+	svc     Service
 }
 
-func New(svc Service) *Server {
+func New(baseURL string, svc Service) *Server {
 	return &Server{
-		svc: svc,
+		baseURL: baseURL,
+		svc:     svc,
 	}
 }
 
@@ -103,8 +105,8 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 	bodyFmt := `<html>
 	<p>The answer is <b>%s</b>. Players will have %d guesses.</p>
 	<p>The game expires at %s.</p>
-	<p>Player link: /game/%s</p>
+	<p>Player link: %s/game/%s.</p>
 	</html>`
 
-	w.Write([]byte(fmt.Sprintf(bodyFmt, game.Answer, game.GuessLimit, game.ExpiresAt.Format(time.UnixDate), game.Token)))
+	w.Write([]byte(fmt.Sprintf(bodyFmt, game.Answer, game.GuessLimit, game.ExpiresAt.Format(time.UnixDate), s.baseURL, game.Token)))
 }

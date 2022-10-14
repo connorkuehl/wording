@@ -19,9 +19,11 @@ import (
 
 func main() {
 	var config struct {
-		dsn string
+		baseURL string
+		dsn     string
 	}
 
+	flag.StringVar(&config.baseURL, "base-url", "http://localhost:8080", "Base URL to prefix links with")
 	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 
 	flag.Parse()
@@ -37,7 +39,7 @@ func main() {
 	gameTokenGenerator := generator.NewHumanReadableGenerator(rand.Int)
 
 	svc := service.New(store, adminTokenGenerator, gameTokenGenerator)
-	srv := server.New(svc)
+	srv := server.New(config.baseURL, svc)
 
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)

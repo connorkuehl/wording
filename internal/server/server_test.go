@@ -17,7 +17,7 @@ import (
 func TestCreateGame(t *testing.T) {
 	now := time.Now().UTC()
 	svc := NewMockService(t)
-	svr := New(svc)
+	svr := New("http://localhost:8080", svc)
 
 	form := url.Values{
 		"answer":        {"potato"},
