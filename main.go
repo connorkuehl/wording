@@ -1,18 +1,35 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
 	"github.com/connorkuehl/wording/internal/server"
 	"github.com/connorkuehl/wording/internal/service"
+	"github.com/connorkuehl/wording/internal/store"
 )
 
 func main() {
-	svc := service.New(nil, nil, nil)
+	var config struct {
+		dsn string
+	}
+
+	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
+
+	flag.Parse()
+
+	store, err := store.NewPostgresStore(config.dsn)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer store.Close()
+
+	svc := service.New(store, nil, nil)
 	srv := server.New(svc)
 
 	router := chi.NewRouter()
