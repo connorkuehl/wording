@@ -34,17 +34,17 @@ var builtinColors = []string{
 
 type RandInt func() int
 
-type TokenGenerator struct {
+type HumanReadable struct {
 	randInt RandInt
 }
 
-func NewTokenGenerator(g RandInt) *TokenGenerator {
-	return &TokenGenerator{
+func NewHumanReadableGenerator(g RandInt) *HumanReadable {
+	return &HumanReadable{
 		randInt: g,
 	}
 }
 
-func (g *TokenGenerator) NewToken() string {
+func (g *HumanReadable) NewToken() string {
 	parts := []string{
 		builtinColors[g.randInt()%len(builtinColors)],
 		builtinAdjectives[g.randInt()%len(builtinAdjectives)],

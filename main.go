@@ -33,7 +33,7 @@ func main() {
 	defer store.Close()
 
 	rand.Seed(time.Now().UnixNano())
-	tokenGenerator := generator.NewTokenGenerator(rand.Int)
+	tokenGenerator := generator.NewHumanReadableGenerator(rand.Int)
 
 	svc := service.New(store, tokenGenerator)
 	srv := server.New(svc)
