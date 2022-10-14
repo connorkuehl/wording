@@ -13,7 +13,7 @@ import (
 
 func TestCreateGame(t *testing.T) {
 	now := time.Now()
-	nower := func() time.Time { return now }
+
 	tokGen := NewMockTokenGenerator(t)
 	mockStore := NewMockStore(t)
 
@@ -29,7 +29,7 @@ func TestCreateGame(t *testing.T) {
 		}, nil).
 		Once()
 
-	svc := New(mockStore, tokGen, nower)
+	svc := New(mockStore, tokGen)
 
 	got, err := svc.CreateGame(
 		context.TODO(),

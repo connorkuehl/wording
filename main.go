@@ -29,7 +29,7 @@ func main() {
 	}
 	defer store.Close()
 
-	svc := service.New(store, nil, nil)
+	svc := service.New(store, nil)
 	srv := server.New(svc)
 
 	router := chi.NewRouter()
