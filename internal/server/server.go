@@ -102,11 +102,16 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bodyFmt := `<html>
-	<p>The answer is <b>%s</b>. Players will have %d guesses.</p>
-	<p>The game expires at %s.</p>
-	<p>Player link: %s/game/%s.</p>
-	</html>`
-
-	w.Write([]byte(fmt.Sprintf(bodyFmt, game.Answer, game.GuessLimit, game.ExpiresAt.Format(time.UnixDate), s.baseURL, game.Token)))
+	err = view.ManageGame{
+		BaseURL:        s.baseURL,
+		AdminToken:     game.AdminToken,
+		Token:          game.Token,
+		Answer:         game.Answer,
+		GuessesAllowed: game.GuessLimit,
+		ExpiresAt:      game.ExpiresAt,
+	}.RenderTo(w)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
 }
