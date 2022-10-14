@@ -6,8 +6,9 @@ import (
 	"errors"
 	"time"
 
-	"github.com/connorkuehl/wording/internal/wording"
 	_ "github.com/lib/pq"
+
+	"github.com/connorkuehl/wording/internal/wording"
 )
 
 type PostgresStore struct {
