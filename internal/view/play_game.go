@@ -4,6 +4,8 @@ import (
 	_ "embed"
 	"html/template"
 	"io"
+
+	"github.com/connorkuehl/wording/internal/wording"
 )
 
 //go:embed play_game.tmpl.html
@@ -12,9 +14,9 @@ var playGameHTML string
 var playGameTmpl = template.Must(template.New("play-game").Parse(playGameHTML))
 
 type PlayGame struct {
-	Token    string
-	Length   int
-	Attempts []string
+	Token     string
+	Length    int
+	GameState *wording.GameState
 }
 
 func (v PlayGame) RenderTo(w io.Writer) error {

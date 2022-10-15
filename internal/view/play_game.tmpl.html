@@ -1,4 +1,15 @@
 <html>
+    <head>
+        <style>
+            .correct {
+                color: green;
+            }
+
+            .partial {
+                color: yellow;
+            }
+        </style>
+    </head>
     <form action="/game/{{ .Token }}" method="post">
         <label for="guess">The word is:</label>
         <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
@@ -6,8 +17,14 @@
     </form>
     <p>Your guesses:</p>
     <ul>
-        {{ range $index, $element := .Attempts }}
-        <li>{{ $element }}</li>
+        {{ range $index, $element := .GameState.Attempts }}
+        <li>
+            {{ range $i, $ch := $element }}
+            <span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }}>
+                {{ $ch.Value }}
+            </span>
+            {{ end }}
+        </li>
         {{ end }}
     </ul>
 </html>

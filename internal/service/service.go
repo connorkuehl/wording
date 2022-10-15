@@ -89,6 +89,70 @@ func (s *Service) NewPlayerToken(ctx context.Context) string {
 	return s.adminTokenGenerator.NewToken()
 }
 
+func (s *Service) GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error) {
+	game, err := s.store.GameByToken(ctx, gameToken)
+	if errors.Is(err, store.ErrNotFound) {
+		return nil, ErrNotFound
+	}
+
+	plays, err := s.store.Plays(ctx, gameToken, playerToken)
+	if errors.Is(err, store.ErrNotFound) {
+		return &wording.GameState{CanContinue: true}, nil
+	}
+
+	key := make(map[rune][]int)
+	for i, r := range game.Answer {
+		key[r] = append(key[r], i)
+	}
+
+	var ats []wording.Attempt
+	for _, play := range plays.Attempts {
+		var at wording.Attempt
+		for i, r := range play {
+			ch := wording.Character{
+				Value: string(r),
+			}
+
+			locs, ok := key[r]
+			for _, l := range locs {
+				if l == i {
+					ch.IsCorrect = true
+					break
+				}
+			}
+			if ok {
+				ch.IsPartial = true
+			}
+
+			at = append(at, ch)
+		}
+
+		ats = append(ats, at)
+	}
+
+	state := wording.GameState{
+		Attempts: ats,
+	}
+
+	for _, attempt := range state.Attempts {
+		correct := true
+
+		for _, ch := range attempt {
+			correct = correct && ch.IsCorrect
+		}
+
+		if correct {
+			state.IsVictorious = true
+			break
+		}
+	}
+
+	state.GameOver = len(state.Attempts) >= game.GuessLimit
+	state.CanContinue = !state.IsVictorious || state.GameOver
+
+	return &state, nil
+}
+
 func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
 	plays, err := s.store.Plays(ctx, gameToken, playerToken)
 	if errors.Is(err, store.ErrNotFound) {

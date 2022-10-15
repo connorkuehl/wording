@@ -24,7 +24,7 @@ type Service interface {
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 	GameByToken(ctx context.Context, token string) (*wording.Game, error)
 	SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error
-	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
+	GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error)
 	NewPlayerToken(ctx context.Context) string
 }
 
@@ -144,16 +144,16 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 		id = idCookie.Value
 	}
 
-	plays, err := s.svc.Plays(ctx, game.Token, id)
+	state, err := s.svc.GameState(ctx, game.Token, id)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
 	err = view.PlayGame{
-		Token:    token,
-		Length:   len(game.Answer),
-		Attempts: plays.Attempts,
+		Token:     token,
+		Length:    len(game.Answer),
+		GameState: state,
 	}.RenderTo(w)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

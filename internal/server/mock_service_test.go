@@ -167,6 +167,54 @@ func (_c *MockService_GameByToken_Call) Return(_a0 *wording.Game, _a1 error) *Mo
 	return _c
 }
 
+// GameState provides a mock function with given fields: ctx, gameToken, playerToken
+func (_m *MockService) GameState(ctx context.Context, gameToken string, playerToken string) (*wording.GameState, error) {
+	ret := _m.Called(ctx, gameToken, playerToken)
+
+	var r0 *wording.GameState
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *wording.GameState); ok {
+		r0 = rf(ctx, gameToken, playerToken)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*wording.GameState)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, gameToken, playerToken)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockService_GameState_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GameState'
+type MockService_GameState_Call struct {
+	*mock.Call
+}
+
+// GameState is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gameToken string
+//  - playerToken string
+func (_e *MockService_Expecter) GameState(ctx interface{}, gameToken interface{}, playerToken interface{}) *MockService_GameState_Call {
+	return &MockService_GameState_Call{Call: _e.mock.On("GameState", ctx, gameToken, playerToken)}
+}
+
+func (_c *MockService_GameState_Call) Run(run func(ctx context.Context, gameToken string, playerToken string)) *MockService_GameState_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockService_GameState_Call) Return(_a0 *wording.GameState, _a1 error) *MockService_GameState_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 // NewPlayerToken provides a mock function with given fields: ctx
 func (_m *MockService) NewPlayerToken(ctx context.Context) string {
 	ret := _m.Called(ctx)
@@ -201,54 +249,6 @@ func (_c *MockService_NewPlayerToken_Call) Run(run func(ctx context.Context)) *M
 
 func (_c *MockService_NewPlayerToken_Call) Return(_a0 string) *MockService_NewPlayerToken_Call {
 	_c.Call.Return(_a0)
-	return _c
-}
-
-// Plays provides a mock function with given fields: ctx, gameToken, playerToken
-func (_m *MockService) Plays(ctx context.Context, gameToken string, playerToken string) (*wording.Plays, error) {
-	ret := _m.Called(ctx, gameToken, playerToken)
-
-	var r0 *wording.Plays
-	if rf, ok := ret.Get(0).(func(context.Context, string, string) *wording.Plays); ok {
-		r0 = rf(ctx, gameToken, playerToken)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wording.Plays)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
-		r1 = rf(ctx, gameToken, playerToken)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// MockService_Plays_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Plays'
-type MockService_Plays_Call struct {
-	*mock.Call
-}
-
-// Plays is a helper method to define mock.On call
-//  - ctx context.Context
-//  - gameToken string
-//  - playerToken string
-func (_e *MockService_Expecter) Plays(ctx interface{}, gameToken interface{}, playerToken interface{}) *MockService_Plays_Call {
-	return &MockService_Plays_Call{Call: _e.mock.On("Plays", ctx, gameToken, playerToken)}
-}
-
-func (_c *MockService_Plays_Call) Run(run func(ctx context.Context, gameToken string, playerToken string)) *MockService_Plays_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(string), args[2].(string))
-	})
-	return _c
-}
-
-func (_c *MockService_Plays_Call) Return(_a0 *wording.Plays, _a1 error) *MockService_Plays_Call {
-	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
