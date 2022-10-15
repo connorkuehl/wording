@@ -10,6 +10,15 @@
             }
         </style>
     </head>
+    {{ if not .GameState.CanContinue }}
+    <h1>
+        {{ if .GameState.IsVictorious }}
+        You are victorious!
+        {{ else }}
+        You lost :(
+        {{ end }}
+    </h1>
+    {{ end }}
     <form action="/game/{{ .Token }}" method="post">
         <label for="guess">The word is:</label>
         <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
