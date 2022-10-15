@@ -50,15 +50,26 @@ func (s *Service) CreateGame(
 }
 
 func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
-	return s.store.Game(ctx, adminToken)
+	game, err := s.store.Game(ctx, adminToken)
+	if errors.Is(err, store.ErrNotFound) {
+		err = ErrNotFound
+	}
+	return game, err
 }
 
 func (s *Service) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
-	return s.store.GameByToken(ctx, token)
+	game, err := s.store.GameByToken(ctx, token)
+	if errors.Is(err, store.ErrNotFound) {
+		err = ErrNotFound
+	}
+	return game, err
 }
 
 func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error {
 	game, err := s.store.GameByToken(ctx, gameToken)
+	if errors.Is(err, store.ErrNotFound) {
+		err = ErrNotFound
+	}
 	if err != nil {
 		return err
 	}

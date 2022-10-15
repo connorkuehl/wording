@@ -13,7 +13,6 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"github.com/connorkuehl/wording/internal/service"
-	"github.com/connorkuehl/wording/internal/store"
 	"github.com/connorkuehl/wording/internal/view"
 	"github.com/connorkuehl/wording/internal/wording"
 )
@@ -98,7 +97,7 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 	}
 
 	game, err := s.svc.Game(ctx, adminToken)
-	if errors.Is(err, store.ErrNotFound) {
+	if errors.Is(err, service.ErrNotFound) {
 		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
 		return
 	}
