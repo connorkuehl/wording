@@ -76,6 +76,11 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 		return ErrGuessLimitReached
 	}
 
+	state := plays.Evaluate(game.Answer, game.GuessLimit)
+	if !state.CanContinue {
+		return ErrCannotContinue
+	}
+
 	plays.Attempts = append(plays.Attempts, guess)
 	err = s.store.PutPlays(ctx, gameToken, playerToken, plays)
 	if err != nil {

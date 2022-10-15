@@ -190,7 +190,7 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = s.svc.SubmitGuess(ctx, token, id, guess)
-	if errors.Is(err, service.ErrGuessLimitReached) {
+	if errors.Is(err, service.ErrGuessLimitReached) || errors.Is(err, service.ErrCannotContinue) {
 		http.Redirect(w, r, fmt.Sprintf("/game/%s", token), http.StatusSeeOther)
 		return
 	}
