@@ -9,14 +9,14 @@ friends.
   - [ ] Games created
   - [ ] Guesses cast
   - [ ] Correct guesses
-- [ ] A visitor can create a game from the top-level/index page.
+- [x] A visitor can create a game from the top-level/index page.
 - [ ] A game creator can create a game and share a link to the puzzle they
       created.
-- [ ] A game creator is given a secret management URL at time of create so
+- [x] A game creator is given a secret management URL at time of create so
       they can manage the game.
 - [ ] A game creator can specify an expiration date for the game (up to a
       defined limit.)
-- [ ] A game creator can specify the number of attempts players will have for
+- [x] A game creator can specify the number of attempts players will have for
       the game (up to a defined maximum.)
 - [ ] A game creator can expire the game early with their management URL.
 - [ ] A game creator can un-expire a game that they accidentally marked as
@@ -40,7 +40,7 @@ friends.
   - [ ] Green means the letter is included in the word and is in the correct
 position.
 - [ ] A player is not able to submit a guess if:
-  - they have already guessed the correct answer;
-  - or they have no votes remaining.
-- [ ] A player's participation in a game is tracked and shown when they visit
+  - [ ] they have already guessed the correct answer;
+  - [x] or they have no votes remaining.
+- [x] A player's participation in a game is tracked and shown when they visit
       the puzzle.
