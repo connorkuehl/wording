@@ -100,32 +100,7 @@ func (s *Service) GameState(ctx context.Context, gameToken, playerToken string) 
 		return &wording.GameState{CanContinue: true}, nil
 	}
 
-	var ats []wording.Attempt
-	for _, play := range plays.Attempts {
-		ats = append(ats, wording.Evaluate(game.Answer, play))
-	}
-
-	state := wording.GameState{
-		Attempts: ats,
-	}
-
-	for _, attempt := range state.Attempts {
-		correct := true
-
-		for _, ch := range attempt {
-			correct = correct && ch.IsCorrect
-		}
-
-		if correct {
-			state.IsVictorious = true
-			break
-		}
-	}
-
-	state.GameOver = len(state.Attempts) >= game.GuessLimit
-	state.CanContinue = !state.IsVictorious || state.GameOver
-
-	return &state, nil
+	return plays.Evaluate(game.Answer, game.GuessLimit), nil
 }
 
 func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
