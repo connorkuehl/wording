@@ -28,7 +28,7 @@ func (p *Plays) Evaluate(answer string, guessLimit int) *GameState {
 	}
 
 	state.GameOver = len(state.Attempts) >= guessLimit
-	state.CanContinue = !state.IsVictorious || state.GameOver
+	state.CanContinue = !state.IsVictorious && !state.GameOver
 
 	return &state
 }
