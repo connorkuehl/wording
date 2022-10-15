@@ -100,34 +100,9 @@ func (s *Service) GameState(ctx context.Context, gameToken, playerToken string) 
 		return &wording.GameState{CanContinue: true}, nil
 	}
 
-	key := make(map[rune][]int)
-	for i, r := range game.Answer {
-		key[r] = append(key[r], i)
-	}
-
 	var ats []wording.Attempt
 	for _, play := range plays.Attempts {
-		var at wording.Attempt
-		for i, r := range play {
-			ch := wording.Character{
-				Value: string(r),
-			}
-
-			locs, ok := key[r]
-			for _, l := range locs {
-				if l == i {
-					ch.IsCorrect = true
-					break
-				}
-			}
-			if ok {
-				ch.IsPartial = true
-			}
-
-			at = append(at, ch)
-		}
-
-		ats = append(ats, at)
+		ats = append(ats, wording.Evaluate(game.Answer, play))
 	}
 
 	state := wording.GameState{
