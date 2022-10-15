@@ -10,7 +10,7 @@ friends.
   - [ ] Guesses cast
   - [ ] Correct guesses
 - [x] A visitor can create a game from the top-level/index page.
-- [ ] A game creator can create a game and share a link to the puzzle they
+- [x] A game creator can create a game and share a link to the puzzle they
       created.
 - [x] A game creator is given a secret management URL at time of create so
       they can manage the game.
@@ -31,16 +31,16 @@ friends.
   - [ ] Total attempts
   - [ ] Number of correct guesses
   - [ ] The time it took a player to guess correctly
-- [ ] A player can submit a guess so long as the amount of previous guesses
+- [x] A player can submit a guess so long as the amount of previous guesses
       does not exceed the maximum allowed for the puzzle.
-- [ ] The UI presents visual feedback for guesses:
-  - [ ] Gray means a letter is not included in the word.
-  - [ ] Yellow means a letter is included in the word but is in the wrong
+- [x] The UI presents visual feedback for guesses:
+  - [x] Gray means a letter is not included in the word.
+  - [x] Yellow means a letter is included in the word but is in the wrong
   spot.
-  - [ ] Green means the letter is included in the word and is in the correct
+  - [x] Green means the letter is included in the word and is in the correct
 position.
-- [ ] A player is not able to submit a guess if:
-  - [ ] they have already guessed the correct answer;
+- [x] A player is not able to submit a guess if:
+  - [x] they have already guessed the correct answer;
   - [x] or they have no votes remaining.
 - [x] A player's participation in a game is tracked and shown when they visit
       the puzzle.
