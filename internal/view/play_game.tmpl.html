@@ -19,6 +19,7 @@
         {{ end }}
     </h1>
     {{ end }}
+    <p>The word has {{ .Length }} letters.</p>
     <form action="/game/{{ .Token }}" method="post">
         <label for="guess">The word is:</label>
         <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
