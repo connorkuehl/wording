@@ -167,6 +167,131 @@ func (_c *MockService_GameByToken_Call) Return(_a0 *wording.Game, _a1 error) *Mo
 	return _c
 }
 
+// NewPlayerToken provides a mock function with given fields: ctx
+func (_m *MockService) NewPlayerToken(ctx context.Context) string {
+	ret := _m.Called(ctx)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(context.Context) string); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// MockService_NewPlayerToken_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'NewPlayerToken'
+type MockService_NewPlayerToken_Call struct {
+	*mock.Call
+}
+
+// NewPlayerToken is a helper method to define mock.On call
+//  - ctx context.Context
+func (_e *MockService_Expecter) NewPlayerToken(ctx interface{}) *MockService_NewPlayerToken_Call {
+	return &MockService_NewPlayerToken_Call{Call: _e.mock.On("NewPlayerToken", ctx)}
+}
+
+func (_c *MockService_NewPlayerToken_Call) Run(run func(ctx context.Context)) *MockService_NewPlayerToken_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockService_NewPlayerToken_Call) Return(_a0 string) *MockService_NewPlayerToken_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
+// Plays provides a mock function with given fields: ctx, gameToken, playerToken
+func (_m *MockService) Plays(ctx context.Context, gameToken string, playerToken string) (*wording.Plays, error) {
+	ret := _m.Called(ctx, gameToken, playerToken)
+
+	var r0 *wording.Plays
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *wording.Plays); ok {
+		r0 = rf(ctx, gameToken, playerToken)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*wording.Plays)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, gameToken, playerToken)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockService_Plays_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Plays'
+type MockService_Plays_Call struct {
+	*mock.Call
+}
+
+// Plays is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gameToken string
+//  - playerToken string
+func (_e *MockService_Expecter) Plays(ctx interface{}, gameToken interface{}, playerToken interface{}) *MockService_Plays_Call {
+	return &MockService_Plays_Call{Call: _e.mock.On("Plays", ctx, gameToken, playerToken)}
+}
+
+func (_c *MockService_Plays_Call) Run(run func(ctx context.Context, gameToken string, playerToken string)) *MockService_Plays_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockService_Plays_Call) Return(_a0 *wording.Plays, _a1 error) *MockService_Plays_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+// SubmitGuess provides a mock function with given fields: ctx, gameToken, playerToken, guess
+func (_m *MockService) SubmitGuess(ctx context.Context, gameToken string, playerToken string, guess string) error {
+	ret := _m.Called(ctx, gameToken, playerToken, guess)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) error); ok {
+		r0 = rf(ctx, gameToken, playerToken, guess)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockService_SubmitGuess_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SubmitGuess'
+type MockService_SubmitGuess_Call struct {
+	*mock.Call
+}
+
+// SubmitGuess is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gameToken string
+//  - playerToken string
+//  - guess string
+func (_e *MockService_Expecter) SubmitGuess(ctx interface{}, gameToken interface{}, playerToken interface{}, guess interface{}) *MockService_SubmitGuess_Call {
+	return &MockService_SubmitGuess_Call{Call: _e.mock.On("SubmitGuess", ctx, gameToken, playerToken, guess)}
+}
+
+func (_c *MockService_SubmitGuess_Call) Run(run func(ctx context.Context, gameToken string, playerToken string, guess string)) *MockService_SubmitGuess_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(string))
+	})
+	return _c
+}
+
+func (_c *MockService_SubmitGuess_Call) Return(_a0 error) *MockService_SubmitGuess_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
 type mockConstructorTestingTNewMockService interface {
 	mock.TestingT
 	Cleanup(func())

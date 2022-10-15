@@ -12,7 +12,9 @@ var playGameHTML string
 var playGameTmpl = template.Must(template.New("play-game").Parse(playGameHTML))
 
 type PlayGame struct {
-	Length int
+	Token    string
+	Length   int
+	Attempts []string
 }
 
 func (v PlayGame) RenderTo(w io.Writer) error {

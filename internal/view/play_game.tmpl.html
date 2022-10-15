@@ -1,7 +1,13 @@
 <html>
-    <form>
+    <form action="/game/{{ .Token }}" method="post">
         <label for="guess">The word is:</label>
-        <input id="answer" name="answer" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
+        <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
         <input type="submit" value="Guess!" />
     </form>
+    <p>Your guesses:</p>
+    <ul>
+        {{ range $index, $element := .Attempts }}
+        <li>{{ $element }}</li>
+        {{ end }}
+    </ul>
 </html>

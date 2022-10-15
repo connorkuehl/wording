@@ -51,6 +51,7 @@ func main() {
 	router.Get("/manage/{admin_token}", srv.ManageGame)
 	router.Post("/games", srv.CreateGame)
 	router.Get("/game/{token}", srv.PlayGame)
+	router.Post("/game/{token}", srv.Guess)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

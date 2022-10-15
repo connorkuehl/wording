@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
 
 	"github.com/connorkuehl/wording/internal/wording"
 )
@@ -107,4 +107,32 @@ func (s *PostgresStore) GameByToken(ctx context.Context, token string) (*wording
 	}
 
 	return &game, nil
+}
+
+func (s *PostgresStore) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
+	plays := &wording.Plays{}
+
+	query := `SELECT guesses FROM attempts WHERE game_token=$1 AND player_token=$2`
+	err := s.db.QueryRowContext(ctx, query, gameToken, playerToken).Scan(pq.Array(&plays.Attempts))
+	if errors.Is(err, sql.ErrNoRows) {
+		return nil, ErrNotFound
+	}
+
+	return plays, nil
+}
+
+func (s *PostgresStore) PutPlays(ctx context.Context, gameToken, playerToken string, plays *wording.Plays) error {
+	query := `INSERT INTO attempts (
+		game_token,
+		player_token,
+		guesses
+	) VALUES (
+		$1,
+		$2,
+		$3
+	) ON CONFLICT (game_token, player_token) DO UPDATE SET guesses = $3`
+	args := []any{gameToken, playerToken, pq.Array(plays.Attempts)}
+
+	_, err := s.db.ExecContext(ctx, query, args...)
+	return err
 }

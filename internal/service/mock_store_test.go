@@ -169,6 +169,94 @@ func (_c *MockStore_GameByToken_Call) Return(_a0 *wording.Game, _a1 error) *Mock
 	return _c
 }
 
+// Plays provides a mock function with given fields: ctx, gameToken, playerToken
+func (_m *MockStore) Plays(ctx context.Context, gameToken string, playerToken string) (*wording.Plays, error) {
+	ret := _m.Called(ctx, gameToken, playerToken)
+
+	var r0 *wording.Plays
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *wording.Plays); ok {
+		r0 = rf(ctx, gameToken, playerToken)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*wording.Plays)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, gameToken, playerToken)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_Plays_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Plays'
+type MockStore_Plays_Call struct {
+	*mock.Call
+}
+
+// Plays is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gameToken string
+//  - playerToken string
+func (_e *MockStore_Expecter) Plays(ctx interface{}, gameToken interface{}, playerToken interface{}) *MockStore_Plays_Call {
+	return &MockStore_Plays_Call{Call: _e.mock.On("Plays", ctx, gameToken, playerToken)}
+}
+
+func (_c *MockStore_Plays_Call) Run(run func(ctx context.Context, gameToken string, playerToken string)) *MockStore_Plays_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string))
+	})
+	return _c
+}
+
+func (_c *MockStore_Plays_Call) Return(_a0 *wording.Plays, _a1 error) *MockStore_Plays_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+// PutPlays provides a mock function with given fields: ctx, gameToken, playerToken, plays
+func (_m *MockStore) PutPlays(ctx context.Context, gameToken string, playerToken string, plays *wording.Plays) error {
+	ret := _m.Called(ctx, gameToken, playerToken, plays)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, *wording.Plays) error); ok {
+		r0 = rf(ctx, gameToken, playerToken, plays)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockStore_PutPlays_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PutPlays'
+type MockStore_PutPlays_Call struct {
+	*mock.Call
+}
+
+// PutPlays is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gameToken string
+//  - playerToken string
+//  - plays *wording.Plays
+func (_e *MockStore_Expecter) PutPlays(ctx interface{}, gameToken interface{}, playerToken interface{}, plays interface{}) *MockStore_PutPlays_Call {
+	return &MockStore_PutPlays_Call{Call: _e.mock.On("PutPlays", ctx, gameToken, playerToken, plays)}
+}
+
+func (_c *MockStore_PutPlays_Call) Run(run func(ctx context.Context, gameToken string, playerToken string, plays *wording.Plays)) *MockStore_PutPlays_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string), args[2].(string), args[3].(*wording.Plays))
+	})
+	return _c
+}
+
+func (_c *MockStore_PutPlays_Call) Return(_a0 error) *MockStore_PutPlays_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
 type mockConstructorTestingTNewMockStore interface {
 	mock.TestingT
 	Cleanup(func())

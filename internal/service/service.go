@@ -2,8 +2,10 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
+	"github.com/connorkuehl/wording/internal/store"
 	"github.com/connorkuehl/wording/internal/wording"
 )
 
@@ -14,6 +16,8 @@ type Store interface {
 	CreateGame(ctx context.Context, adminToken, token, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 	GameByToken(ctx context.Context, token string) (*wording.Game, error)
+	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
+	PutPlays(ctx context.Context, gameToken, playerToken string, plays *wording.Plays) error
 }
 
 //go:generate mockery --name TokenGenerator --case underscore --with-expecter --testonly --inpackage
@@ -51,4 +55,48 @@ func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, e
 
 func (s *Service) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
 	return s.store.GameByToken(ctx, token)
+}
+
+func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error {
+	game, err := s.store.GameByToken(ctx, gameToken)
+	if err != nil {
+		return err
+	}
+
+	plays, err := s.store.Plays(ctx, gameToken, playerToken)
+	if errors.Is(err, store.ErrNotFound) {
+		plays = &wording.Plays{}
+		err = nil
+	}
+	if err != nil {
+		return err
+	}
+
+	if len(plays.Attempts) >= game.GuessLimit {
+		return ErrGuessLimitReached
+	}
+
+	plays.Attempts = append(plays.Attempts, guess)
+	err = s.store.PutPlays(ctx, gameToken, playerToken, plays)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Service) NewPlayerToken(ctx context.Context) string {
+	return s.adminTokenGenerator.NewToken()
+}
+
+func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
+	plays, err := s.store.Plays(ctx, gameToken, playerToken)
+	if errors.Is(err, store.ErrNotFound) {
+		return new(wording.Plays), nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return plays, nil
 }

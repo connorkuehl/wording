@@ -12,6 +12,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
+	"github.com/connorkuehl/wording/internal/service"
 	"github.com/connorkuehl/wording/internal/store"
 	"github.com/connorkuehl/wording/internal/view"
 	"github.com/connorkuehl/wording/internal/wording"
@@ -22,6 +23,9 @@ type Service interface {
 	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 	GameByToken(ctx context.Context, token string) (*wording.Game, error)
+	SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error
+	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
+	NewPlayerToken(ctx context.Context) string
 }
 
 type Server struct {
@@ -132,11 +136,68 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var id string
+	idCookie, err := r.Cookie("WordingToken")
+	if err != nil {
+		id = s.svc.NewPlayerToken(ctx)
+	} else {
+		id = idCookie.Value
+	}
+
+	plays, err := s.svc.Plays(ctx, game.Token, id)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
 	err = view.PlayGame{
-		Length: len(game.Answer),
+		Token:    token,
+		Length:   len(game.Answer),
+		Attempts: plays.Attempts,
 	}.RenderTo(w)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
+}
+
+func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
+	ctx := context.TODO()
+
+	token := chi.URLParam(r, "token")
+
+	game, err := s.svc.GameByToken(ctx, token)
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	var id string
+	idCookie, err := r.Cookie("WordingToken")
+	if err != nil {
+		id = s.svc.NewPlayerToken(ctx)
+		http.SetCookie(w, &http.Cookie{Name: "WordingToken", Value: id})
+	} else {
+		id = idCookie.Value
+	}
+
+	r.ParseForm()
+
+	guess := r.PostForm.Get("guess")
+	if len(guess) != len(game.Answer) {
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	err = s.svc.SubmitGuess(ctx, token, id, guess)
+	if errors.Is(err, service.ErrGuessLimitReached) {
+		http.Redirect(w, r, fmt.Sprintf("/game/%s", token), http.StatusSeeOther)
+		return
+	}
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/game/%s", token), http.StatusSeeOther)
 }
