@@ -39,6 +39,10 @@ type GameState struct {
 }
 
 func Evaluate(answer, guess string) Attempt {
+	// TODO: consider making a type that maintains the
+	// invariant that both answer and guess must be same
+	// length
+
 	key := make(map[rune][]int)
 	for i, r := range answer {
 		key[r] = append(key[r], i)
