@@ -18,12 +18,9 @@ friends.
       defined limit.)
 - [x] A game creator can specify the number of attempts players will have for
       the game (up to a defined maximum.)
-- [ ] A game creator can expire the game early with their management URL.
-- [ ] A game creator can un-expire a game that they accidentally marked as
-      expired with their management URL.
 - [x] A game creator cannot modify guess limits for a game that has already
       been created.
-- [ ] A game creator can permanently delete the game with their management URL.
+- [x] A game creator can permanently delete the game with their management URL.
 - [ ] A game creator can choose whether or not the answer is displayed to a
       player who has exhausted all of their guess attempts.
 - [ ] A game creator can specify if game stats should be displayed.
@@ -52,7 +49,4 @@ position.
   - [ ] guess length must be exactly the length of the answer;
   - [ ] remaining attempts are disabled when the game is over;
   - [ ] the game is disabled when past the expiry time;
-  - [ ] the game is disabled if the game creator has manually expired/revoked it;
-- [ ] A deleted game's play page shows a message saying it is deleted
-- [ ] Deleted games are periodically culled from the persistence layer
 - [ ] Expired games are marked as deleted after an interval passes
