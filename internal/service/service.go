@@ -90,11 +90,6 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 		return err
 	}
 
-	err = wording.ValidateGuess(guess, game.Answer)
-	if err != nil {
-		return fmt.Errorf("invalid input: %w", err)
-	}
-
 	plays, err := s.store.Plays(ctx, gameToken, playerToken)
 	if errors.Is(err, store.ErrNotFound) {
 		plays = &wording.Plays{}
@@ -102,6 +97,11 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 	}
 	if err != nil {
 		return err
+	}
+
+	err = wording.ValidateGuess(guess, game.Answer, plays.Attempts)
+	if err != nil {
+		return fmt.Errorf("invalid input: %w", err)
 	}
 
 	if len(plays.Attempts) >= game.GuessLimit {

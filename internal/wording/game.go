@@ -91,7 +91,7 @@ func ValidateAnswer(answer string) error {
 	return nil
 }
 
-func ValidateGuess(guess, answer string) error {
+func ValidateGuess(guess, answer string, previousGuesses []string) error {
 	violations := make(InputViolations)
 
 	if len(guess) != len(answer) {
@@ -100,6 +100,12 @@ func ValidateGuess(guess, answer string) error {
 
 	if !isAlpha(guess) {
 		violations["guess"] = append(violations["guess"], errors.New("has non-alphabetical characters"))
+	}
+
+	for _, g := range previousGuesses {
+		if g == guess {
+			violations["guess"] = append(violations["guess"], errors.New("has already been tried"))
+		}
 	}
 
 	if len(violations) > 0 {
