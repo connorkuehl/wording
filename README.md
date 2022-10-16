@@ -5,10 +5,10 @@ friends.
 
 # Requirements
 
-- [ ] The top-level/index page can display a count of:
-  - [ ] Games created
-  - [ ] Guesses cast
-  - [ ] Correct guesses
+- [x] The top-level/index page can display a count of:
+  - [x] Games created
+  - [x] Guesses cast
+  - [x] Correct guesses
 - [x] A visitor can create a game from the top-level/index page.
 - [x] A game creator can create a game and share a link to the puzzle they
       created.
@@ -21,7 +21,7 @@ friends.
 - [ ] A game creator can expire the game early with their management URL.
 - [ ] A game creator can un-expire a game that they accidentally marked as
       expired with their management URL.
-- [ ] A game creator cannot modify guess limits for a game that has already
+- [x] A game creator cannot modify guess limits for a game that has already
       been created.
 - [ ] A game creator can permanently delete the game with their management URL.
 - [ ] A game creator can choose whether or not the answer is displayed to a
