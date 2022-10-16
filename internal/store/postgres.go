@@ -170,3 +170,23 @@ func (s *PostgresStore) Stats(ctx context.Context) (wording.Stats, error) {
 
 	return stats, nil
 }
+
+func (s *PostgresStore) DeleteGame(ctx context.Context, adminToken string) error {
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	_, err = tx.ExecContext(ctx, `DELETE FROM attempts WHERE game_token = (SELECT token FROM games WHERE admin_token = $1)`, adminToken)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.ExecContext(ctx, `DELETE FROM games WHERE admin_token = $1`, adminToken)
+	if err != nil {
+		return err
+	}
+
+	return tx.Commit()
+}

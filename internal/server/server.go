@@ -27,6 +27,7 @@ type Service interface {
 	GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error)
 	NewPlayerToken(ctx context.Context) string
 	Stats(ctx context.Context) (wording.Stats, error)
+	DeleteGame(ctx context.Context, adminToken string) error
 }
 
 type Server struct {
@@ -214,4 +215,22 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, fmt.Sprintf("/game/%s", token), http.StatusSeeOther)
+}
+
+func (s *Server) DeleteGame(w http.ResponseWriter, r *http.Request) {
+	ctx := context.TODO()
+
+	token := chi.URLParam(r, "admin_token")
+
+	err := s.svc.DeleteGame(ctx, token)
+	if errors.Is(err, service.ErrNotFound) {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
+	if err != nil {
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

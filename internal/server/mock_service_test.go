@@ -73,6 +73,44 @@ func (_c *MockService_CreateGame_Call) Return(_a0 *wording.Game, _a1 error) *Moc
 	return _c
 }
 
+// DeleteGame provides a mock function with given fields: ctx, adminToken
+func (_m *MockService) DeleteGame(ctx context.Context, adminToken string) error {
+	ret := _m.Called(ctx, adminToken)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) error); ok {
+		r0 = rf(ctx, adminToken)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockService_DeleteGame_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteGame'
+type MockService_DeleteGame_Call struct {
+	*mock.Call
+}
+
+// DeleteGame is a helper method to define mock.On call
+//  - ctx context.Context
+//  - adminToken string
+func (_e *MockService_Expecter) DeleteGame(ctx interface{}, adminToken interface{}) *MockService_DeleteGame_Call {
+	return &MockService_DeleteGame_Call{Call: _e.mock.On("DeleteGame", ctx, adminToken)}
+}
+
+func (_c *MockService_DeleteGame_Call) Run(run func(ctx context.Context, adminToken string)) *MockService_DeleteGame_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockService_DeleteGame_Call) Return(_a0 error) *MockService_DeleteGame_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
 // Game provides a mock function with given fields: ctx, adminToken
 func (_m *MockService) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
 	ret := _m.Called(ctx, adminToken)

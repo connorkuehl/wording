@@ -22,6 +22,7 @@ type Store interface {
 	PutPlays(ctx context.Context, gameToken, playerToken string, plays *wording.Plays) error
 	IncrementStats(ctx context.Context, stats wording.IncrementStats) error
 	Stats(ctx context.Context) (wording.Stats, error)
+	DeleteGame(ctx context.Context, adminToken string) error
 }
 
 //go:generate mockery --name TokenGenerator --case underscore --with-expecter --testonly --inpackage
@@ -169,4 +170,12 @@ func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wo
 
 func (s *Service) Stats(ctx context.Context) (wording.Stats, error) {
 	return s.store.Stats(ctx)
+}
+
+func (s *Service) DeleteGame(ctx context.Context, adminToken string) error {
+	err := s.store.DeleteGame(ctx, adminToken)
+	if errors.Is(err, store.ErrNotFound) {
+		err = ErrNotFound
+	}
+	return err
 }
