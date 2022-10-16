@@ -16,6 +16,8 @@ import (
 	"github.com/connorkuehl/wording/internal/wording"
 )
 
+const playerTokenCookie = "WordingToken"
+
 //go:generate mockery --name Service --case underscore --with-expecter --testonly --inpackage
 type Service interface {
 	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration) (*wording.Game, error)
@@ -150,7 +152,7 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var id string
-	idCookie, err := r.Cookie("WordingToken")
+	idCookie, err := r.Cookie(playerTokenCookie)
 	if err != nil {
 		id = s.svc.NewPlayerToken(ctx)
 	} else {
@@ -180,10 +182,10 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 	token := chi.URLParam(r, "token")
 
 	var id string
-	idCookie, err := r.Cookie("WordingToken")
+	idCookie, err := r.Cookie(playerTokenCookie)
 	if err != nil {
 		id = s.svc.NewPlayerToken(ctx)
-		http.SetCookie(w, &http.Cookie{Name: "WordingToken", Value: id})
+		http.SetCookie(w, &http.Cookie{Name: playerTokenCookie, Value: id})
 	} else {
 		id = idCookie.Value
 	}
