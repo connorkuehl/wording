@@ -5,7 +5,7 @@ friends.
 
 # Requirements
 
-- [x] The top-level/index page can display a count of:
+- [x] The top-level/index page displays a count of:
   - [x] Games created
   - [x] Guesses cast
   - [x] Correct guesses
