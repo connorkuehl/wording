@@ -39,6 +39,9 @@ func TestCreateGame(t *testing.T) {
 			GuessLimit: 3,
 		}, nil).
 		Once()
+	mockStore.EXPECT().
+		IncrementStats(mock.Anything, wording.IncrementStats{Stats: wording.Stats{GamesCreated: 1}}).
+		Return(nil)
 
 	svc := New(mockStore, admTokGen, tokGen)
 
