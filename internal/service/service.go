@@ -124,6 +124,12 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 		return err
 	}
 
+	plays, err = s.store.Plays(ctx, gameToken, playerToken)
+	if err != nil {
+		return err
+	}
+	state = plays.Evaluate(game.Answer, game.GuessLimit)
+
 	incWins := 0
 	if state.IsVictorious {
 		incWins = 1
