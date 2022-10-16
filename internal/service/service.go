@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 	"time"
 
@@ -48,6 +49,11 @@ func (s *Service) CreateGame(
 	guessLimit int,
 	expiresAfter time.Duration,
 ) (*wording.Game, error) {
+	err := wording.ValidateAnswer(answer)
+	if err != nil {
+		return nil, fmt.Errorf("invalid input: %w", err)
+	}
+
 	expiresAt := now().Add(expiresAfter)
 	game, err := s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), s.gameTokenGenerator.NewToken(), answer, guessLimit, expiresAt)
 	if err != nil {
@@ -86,6 +92,11 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 	}
 	if err != nil {
 		return err
+	}
+
+	err = wording.ValidateGuess(guess, game.Answer)
+	if err != nil {
+		return fmt.Errorf("invalid input: %w", err)
 	}
 
 	plays, err := s.store.Plays(ctx, gameToken, playerToken)

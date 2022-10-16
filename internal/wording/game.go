@@ -1,6 +1,8 @@
 package wording
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 	"time"
 )
@@ -69,4 +71,52 @@ func Evaluate(answer, guess string) Attempt {
 	}
 
 	return at
+}
+
+type InputViolations map[string][]error
+
+func (i InputViolations) Error() string {
+	return fmt.Sprintf("%v", map[string][]error(i))
+}
+
+func ValidateAnswer(answer string) error {
+	violations := make(InputViolations)
+
+	if !isAlpha(answer) {
+		violations["answer"] = append(violations["answer"], errors.New("has non-alphabetical characters"))
+	}
+
+	if len(violations) > 0 {
+		return violations
+	}
+
+	return nil
+}
+
+func ValidateGuess(guess, answer string) error {
+	violations := make(InputViolations)
+
+	if len(guess) != len(answer) {
+		violations["guess"] = append(violations["guess"], fmt.Errorf("guess must be %d characters long", len(answer)))
+	}
+
+	if !isAlpha(guess) {
+		violations["guess"] = append(violations["guess"], errors.New("has non-alphabetical characters"))
+	}
+
+	if len(violations) > 0 {
+		return violations
+	}
+
+	return nil
+}
+
+func isAlpha(s string) bool {
+	legalValues := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	for _, r := range s {
+		if !strings.ContainsRune(legalValues, r) {
+			return false
+		}
+	}
+	return true
 }

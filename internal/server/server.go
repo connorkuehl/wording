@@ -87,6 +87,12 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 	numAttempts = i
 
 	game, err := s.svc.CreateGame(ctx, answer, numAttempts, expiresAfter)
+
+	var invalidInput wording.InputViolations
+	if errors.As(err, &invalidInput) {
+		http.Error(w, http.StatusText(http.StatusBadRequest)+fmt.Sprintf(": %v", err), http.StatusBadRequest)
+		return
+	}
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
@@ -173,12 +179,6 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 
 	token := chi.URLParam(r, "token")
 
-	game, err := s.svc.GameByToken(ctx, token)
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-		return
-	}
-
 	var id string
 	idCookie, err := r.Cookie("WordingToken")
 	if err != nil {
@@ -191,12 +191,13 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 
 	guess := r.PostForm.Get("guess")
-	if len(guess) != len(game.Answer) {
-		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
-		return
-	}
 
 	err = s.svc.SubmitGuess(ctx, token, id, guess)
+	var violations wording.InputViolations
+	if errors.As(err, &violations) {
+		http.Error(w, http.StatusText(http.StatusBadRequest)+fmt.Sprintf(": %v", err), http.StatusBadRequest)
+		return
+	}
 	if errors.Is(err, service.ErrGuessLimitReached) || errors.Is(err, service.ErrCannotContinue) {
 		http.Redirect(w, r, fmt.Sprintf("/game/%s", token), http.StatusSeeOther)
 		return
