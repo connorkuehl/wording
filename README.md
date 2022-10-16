@@ -42,11 +42,11 @@ position.
   - [x] or they have no votes remaining.
 - [x] A player's participation in a game is tracked and shown when they visit
       the puzzle.
-- [ ] A guess is not submitted if:
-  - [ ] the guess is not completely alphabetical (no whitespace, no numbers,
+- [x] A guess is not submitted if:
+  - [x] the guess is not completely alphabetical (no whitespace, no numbers,
         no symbols);
   - [x] the player has already guessed that word;
-  - [ ] the guess is not the same length as the answer;
+  - [x] the guess is not the same length as the answer;
   - [x] the player has no guesses remaining;
 - [ ] The UI offers feedback for input validation:
   - [ ] guess length must be exactly the length of the answer;
