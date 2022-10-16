@@ -31,8 +31,6 @@ friends.
   - [ ] Total attempts
   - [ ] Number of correct guesses
   - [ ] The time it took a player to guess correctly
-- [x] A player can submit a guess so long as the amount of previous guesses
-      does not exceed the maximum allowed for the puzzle.
 - [x] The UI presents visual feedback for guesses:
   - [x] Gray means a letter is not included in the word.
   - [x] Yellow means a letter is included in the word but is in the wrong
@@ -44,3 +42,17 @@ position.
   - [x] or they have no votes remaining.
 - [x] A player's participation in a game is tracked and shown when they visit
       the puzzle.
+- [ ] A guess is not submitted if:
+  - [ ] the guess is not completely alphabetical (no whitespace, no numbers,
+        no symbols);
+  - [x] the player has already guessed that word;
+  - [ ] the guess is not the same length as the answer;
+  - [x] the player has no guesses remaining;
+- [ ] The UI offers feedback for input validation:
+  - [ ] guess length must be exactly the length of the answer;
+  - [ ] remaining attempts are disabled when the game is over;
+  - [ ] the game is disabled when past the expiry time;
+  - [ ] the game is disabled if the game creator has manually expired/revoked it;
+- [ ] A deleted game's play page shows a message saying it is deleted
+- [ ] Deleted games are periodically culled from the persistence layer
+- [ ] Expired games are marked as deleted after an interval passes
