@@ -77,6 +77,20 @@ func (i InputViolations) Error() string {
 	return fmt.Sprintf("%v", map[string][]error(i))
 }
 
+func ValidateGuessLimit(limit int) error {
+	violations := make(InputViolations)
+
+	if limit < 1 || limit > 16 {
+		violations["guesses allowed"] = append(violations["guesses allowed"], errors.New("must be between 1-16 characters long"))
+	}
+
+	if len(violations) > 0 {
+		return violations
+	}
+
+	return nil
+}
+
 func ValidateAnswer(answer string) error {
 	violations := make(InputViolations)
 

@@ -52,6 +52,11 @@ func (s *Service) CreateGame(
 		return nil, fmt.Errorf("invalid input: %w", err)
 	}
 
+	err = wording.ValidateGuessLimit(guessLimit)
+	if err != nil {
+		return nil, fmt.Errorf("invalid input: %w", err)
+	}
+
 	game, err := s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), s.gameTokenGenerator.NewToken(), answer, guessLimit)
 	if err != nil {
 		return nil, err
