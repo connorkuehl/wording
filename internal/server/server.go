@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/go-chi/chi/v5"
 
@@ -20,7 +19,7 @@ const playerTokenCookie = "WordingToken"
 
 //go:generate mockery --name Service --case underscore --with-expecter --testonly --inpackage
 type Service interface {
-	CreateGame(ctx context.Context, answer string, guessLimit int, expiresAfter time.Duration) (*wording.Game, error)
+	CreateGame(ctx context.Context, answer string, guessLimit int) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 	GameByToken(ctx context.Context, token string) (*wording.Game, error)
 	SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error
@@ -62,9 +61,8 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
 	var (
-		answer       string
-		expiresAfter time.Duration
-		numAttempts  int
+		answer      string
+		numAttempts int
 	)
 
 	r.ParseForm()
@@ -75,13 +73,6 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	d, err := time.ParseDuration(r.PostFormValue("expires_after"))
-	if err != nil {
-		http.Error(w, http.StatusText(http.StatusBadRequest)+" expires_after is missing", http.StatusBadRequest)
-		return
-	}
-	expiresAfter = d
-
 	i, err := strconv.Atoi(r.PostFormValue("num_attempts"))
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusBadRequest)+" num_attempts is not a number", http.StatusBadRequest)
@@ -89,7 +80,7 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 	}
 	numAttempts = i
 
-	game, err := s.svc.CreateGame(ctx, answer, numAttempts, expiresAfter)
+	game, err := s.svc.CreateGame(ctx, answer, numAttempts)
 
 	var invalidInput wording.InputViolations
 	if errors.As(err, &invalidInput) {
@@ -129,7 +120,6 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 		Token:          game.Token,
 		Answer:         game.Answer,
 		GuessesAllowed: game.GuessLimit,
-		ExpiresAt:      game.ExpiresAt,
 	}.RenderTo(w)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/mock"
 	"gotest.tools/assert"
@@ -12,16 +11,6 @@ import (
 )
 
 func TestCreateGame(t *testing.T) {
-	oldNow := now
-	defer func() { now = oldNow }()
-	now = func() time.Time {
-		n, err := time.Parse(time.Stamp, "Oct 14 6:28:00")
-		assert.NilError(t, err)
-		return n
-	}
-
-	thisInstant := now()
-
 	tokGen := NewMockTokenGenerator(t)
 	admTokGen := NewMockTokenGenerator(t)
 	mockStore := NewMockStore(t)
@@ -30,12 +19,11 @@ func TestCreateGame(t *testing.T) {
 	tokGen.EXPECT().NewToken().Return("hungry-hippo")
 
 	mockStore.EXPECT().
-		CreateGame(mock.Anything, "wretched-apostle", "hungry-hippo", "answer", 3, thisInstant.Add(24*time.Hour)).
+		CreateGame(mock.Anything, "wretched-apostle", "hungry-hippo", "answer", 3).
 		Return(&wording.Game{
 			AdminToken: "wretched-apostle",
 			Token:      "hungry-hippo",
 			Answer:     "answer",
-			ExpiresAt:  thisInstant.Add(24 * time.Hour),
 			GuessLimit: 3,
 		}, nil).
 		Once()
@@ -49,7 +37,6 @@ func TestCreateGame(t *testing.T) {
 		context.TODO(),
 		"answer",
 		3,
-		24*time.Hour,
 	)
 	assert.NilError(t, err)
 
@@ -57,7 +44,6 @@ func TestCreateGame(t *testing.T) {
 		AdminToken: "wretched-apostle",
 		Token:      "hungry-hippo",
 		Answer:     "answer",
-		ExpiresAt:  thisInstant.Add(24 * time.Hour),
 		GuessLimit: 3,
 	}
 

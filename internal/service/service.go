@@ -5,17 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/connorkuehl/wording/internal/store"
 	"github.com/connorkuehl/wording/internal/wording"
 )
 
-var now = time.Now
-
 //go:generate mockery --name Store --case underscore --with-expecter --testonly --inpackage
 type Store interface {
-	CreateGame(ctx context.Context, adminToken, token, answer string, guessLimit int, expiresAt time.Time) (*wording.Game, error)
+	CreateGame(ctx context.Context, adminToken, token, answer string, guessLimit int) (*wording.Game, error)
 	Game(ctx context.Context, adminToken string) (*wording.Game, error)
 	GameByToken(ctx context.Context, token string) (*wording.Game, error)
 	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
@@ -48,15 +45,13 @@ func (s *Service) CreateGame(
 	ctx context.Context,
 	answer string,
 	guessLimit int,
-	expiresAfter time.Duration,
 ) (*wording.Game, error) {
 	err := wording.ValidateAnswer(answer)
 	if err != nil {
 		return nil, fmt.Errorf("invalid input: %w", err)
 	}
 
-	expiresAt := now().Add(expiresAfter)
-	game, err := s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), s.gameTokenGenerator.NewToken(), answer, guessLimit, expiresAt)
+	game, err := s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), s.gameTokenGenerator.NewToken(), answer, guessLimit)
 	if err != nil {
 		return nil, err
 	}

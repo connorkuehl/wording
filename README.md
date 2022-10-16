@@ -14,8 +14,6 @@ friends.
       created.
 - [x] A game creator is given a secret management URL at time of create so
       they can manage the game.
-- [ ] A game creator can specify an expiration date for the game (up to a
-      defined limit.)
 - [x] A game creator can specify the number of attempts players will have for
       the game (up to a defined maximum.)
 - [x] A game creator cannot modify guess limits for a game that has already
@@ -48,5 +46,5 @@ position.
 - [ ] The UI offers feedback for input validation:
   - [ ] guess length must be exactly the length of the answer;
   - [ ] remaining attempts are disabled when the game is over;
-  - [ ] the game is disabled when past the expiry time;
-- [ ] Expired games are marked as deleted after an interval passes
+- [ ] Games are automatically deleted once their access time is greater than
+      a certain duration.

@@ -15,7 +15,6 @@ import (
 )
 
 func TestCreateGame(t *testing.T) {
-	now := time.Now().UTC()
 	svc := NewMockService(t)
 	svr := New("http://localhost:8080", svc)
 
@@ -30,11 +29,10 @@ func TestCreateGame(t *testing.T) {
 	r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	svc.EXPECT().
-		CreateGame(mock.Anything, "potato", 6, (12*time.Hour)).
+		CreateGame(mock.Anything, "potato", 6).
 		Return(&wording.Game{
 			AdminToken: "wretched-apostle",
 			Answer:     "potato",
-			ExpiresAt:  now.Add(12 * time.Hour),
 			GuessLimit: 6,
 		}, nil).
 		Once()

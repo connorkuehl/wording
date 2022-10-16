@@ -4,14 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"time"
 )
 
 type Game struct {
 	AdminToken string
 	Token      string
 	Answer     string
-	ExpiresAt  time.Time
 	GuessLimit int
 }
 

@@ -4,7 +4,6 @@ import (
 	_ "embed"
 	"html/template"
 	"io"
-	"time"
 )
 
 //go:embed manage_game.tmpl.html
@@ -18,7 +17,6 @@ type ManageGame struct {
 	Token          string
 	Answer         string
 	GuessesAllowed int
-	ExpiresAt      time.Time
 }
 
 func (m ManageGame) RenderTo(w io.Writer) error {
