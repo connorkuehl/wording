@@ -17,6 +17,8 @@ type ManageGame struct {
 	Token          string
 	Answer         string
 	GuessesAllowed int
+	GuessesMade    int
+	CorrectGuesses int
 }
 
 func (m ManageGame) RenderTo(w io.Writer) error {

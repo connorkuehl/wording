@@ -27,6 +27,7 @@ type Service interface {
 	NewPlayerToken(ctx context.Context) string
 	Stats(ctx context.Context) (wording.Stats, error)
 	DeleteGame(ctx context.Context, adminToken string) error
+	GameStats(ctx context.Context, adminToken string) (wording.Stats, error)
 }
 
 type Server struct {
@@ -114,12 +115,20 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	stats, err := s.svc.GameStats(ctx, adminToken)
+	if err != nil {
+		// TODO
+		log.Println(err)
+	}
+
 	err = view.ManageGame{
 		BaseURL:        s.baseURL,
 		AdminToken:     game.AdminToken,
 		Token:          game.Token,
 		Answer:         game.Answer,
 		GuessesAllowed: game.GuessLimit,
+		GuessesMade:    stats.GuessesMade,
+		CorrectGuesses: stats.GamesWon,
 	}.RenderTo(w)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
@@ -200,6 +209,7 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if err != nil {
+		log.Println(err)
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}

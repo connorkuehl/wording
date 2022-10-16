@@ -1,8 +1,14 @@
 <html>
     <p>Player Link: <a href="/game/{{ .Token }}">{{ .BaseURL }}/game/{{ .Token }}</a>.</p>
-    <p>The answer is <strong>{{ .Answer }}</strong>.</p>
-    <p>Players are allowed {{ .GuessesAllowed }} guesses.</p>
-    <br />
+    <p>
+        The answer is <strong>{{ .Answer }}</strong>.<br />
+        Players are allowed {{ .GuessesAllowed }} guesses.
+    </p>
+    <p>
+        Guesses made: {{ .GuessesMade }}.<br />
+        Correct guesses: {{ .CorrectGuesses }}.
+    </p>
+    <hr />
     <p>
         WARNING: <b>DO NOT</b> share your admin link, it is like a
         password that others can use to modify your game.

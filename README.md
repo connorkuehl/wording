@@ -21,11 +21,9 @@ friends.
 - [x] A game creator can permanently delete the game with their management URL.
 - [ ] A game creator can choose whether or not the answer is displayed to a
       player who has exhausted all of their guess attempts.
-- [ ] A game creator can specify if game stats should be displayed.
-- [ ] The game collects the following statistics for each game:
-  - [ ] Total attempts
-  - [ ] Number of correct guesses
-  - [ ] The time it took a player to guess correctly
+- [x] The game collects the following statistics for each game:
+  - [x] Total attempts
+  - [x] Number of correct guesses
 - [x] The UI presents visual feedback for guesses:
   - [x] Gray means a letter is not included in the word.
   - [x] Yellow means a letter is included in the word but is in the wrong

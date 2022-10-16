@@ -173,7 +173,11 @@ func (s *PostgresStore) PutPlays(ctx context.Context, gameToken, playerToken str
 		return err
 	}
 
-	_, err = tx.ExecContext(ctx, `UPDATE games SET accessed_at = NOW(), modified_at = NOW() WHERE token = $1`, gameToken)
+	query = `UPDATE games SET accessed_at = NOW(),
+							  modified_at = NOW()
+							  WHERE token = $1`
+
+	_, err = tx.ExecContext(ctx, query, gameToken)
 	if err != nil {
 		return err
 	}
@@ -213,6 +217,43 @@ func (s *PostgresStore) Stats(ctx context.Context) (wording.Stats, error) {
 	}
 
 	return stats, nil
+}
+
+func (s *PostgresStore) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
+	var stats wording.Stats
+
+	tx, err := s.db.BeginTx(ctx, nil)
+	if err != nil {
+		return stats, err
+	}
+	defer tx.Rollback()
+
+	query := `SELECT COUNT(*)
+	FROM attempts WHERE
+	game_token = (SELECT token FROM games WHERE admin_token = $1) AND
+	(SELECT answer FROM games WHERE admin_token = $1) = ANY (guesses);`
+	err = tx.QueryRowContext(ctx, query, adminToken).Scan(&stats.GamesWon)
+	if err != nil {
+		return stats, err
+	}
+	query = `SELECT array_length(guesses, 1) FROM attempts WHERE game_token = (SELECT token FROM games WHERE admin_token = $1)`
+	rows, err := tx.QueryContext(ctx, query, adminToken)
+	if err != nil {
+		return stats, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var playerGuesses int
+		err := rows.Scan(&playerGuesses)
+		if err != nil {
+			return stats, err
+		}
+
+		stats.GuessesMade += playerGuesses
+	}
+
+	return stats, tx.Commit()
 }
 
 func (s *PostgresStore) DeleteGame(ctx context.Context, adminToken string) error {

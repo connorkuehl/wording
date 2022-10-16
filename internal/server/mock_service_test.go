@@ -250,6 +250,51 @@ func (_c *MockService_GameState_Call) Return(_a0 *wording.GameState, _a1 error) 
 	return _c
 }
 
+// GameStats provides a mock function with given fields: ctx, adminToken
+func (_m *MockService) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
+	ret := _m.Called(ctx, adminToken)
+
+	var r0 wording.Stats
+	if rf, ok := ret.Get(0).(func(context.Context, string) wording.Stats); ok {
+		r0 = rf(ctx, adminToken)
+	} else {
+		r0 = ret.Get(0).(wording.Stats)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, adminToken)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockService_GameStats_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GameStats'
+type MockService_GameStats_Call struct {
+	*mock.Call
+}
+
+// GameStats is a helper method to define mock.On call
+//  - ctx context.Context
+//  - adminToken string
+func (_e *MockService_Expecter) GameStats(ctx interface{}, adminToken interface{}) *MockService_GameStats_Call {
+	return &MockService_GameStats_Call{Call: _e.mock.On("GameStats", ctx, adminToken)}
+}
+
+func (_c *MockService_GameStats_Call) Run(run func(ctx context.Context, adminToken string)) *MockService_GameStats_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(string))
+	})
+	return _c
+}
+
+func (_c *MockService_GameStats_Call) Return(_a0 wording.Stats, _a1 error) *MockService_GameStats_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 // NewPlayerToken provides a mock function with given fields: ctx
 func (_m *MockService) NewPlayerToken(ctx context.Context) string {
 	ret := _m.Called(ctx)

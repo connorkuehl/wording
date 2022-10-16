@@ -18,6 +18,7 @@ type Store interface {
 	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
 	PutPlays(ctx context.Context, gameToken, playerToken string, plays *wording.Plays) error
 	IncrementStats(ctx context.Context, stats wording.IncrementStats) error
+	GameStats(ctx context.Context, adminToken string) (wording.Stats, error)
 	Stats(ctx context.Context) (wording.Stats, error)
 	DeleteGame(ctx context.Context, adminToken string) error
 }
@@ -179,4 +180,8 @@ func (s *Service) DeleteGame(ctx context.Context, adminToken string) error {
 		err = ErrNotFound
 	}
 	return err
+}
+
+func (s *Service) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
+	return s.store.GameStats(ctx, adminToken)
 }
