@@ -146,6 +146,10 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 	}
 
 	game, err := s.svc.GameByToken(ctx, token)
+	if errors.Is(err, service.ErrNotFound) {
+		http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+		return
+	}
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
