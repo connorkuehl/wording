@@ -57,7 +57,7 @@ func Evaluate(answer, guess string) Attempt {
 				break
 			}
 		}
-		if ok {
+		if ok && !ch.IsCorrect {
 			ch.IsPartial = true
 		}
 
