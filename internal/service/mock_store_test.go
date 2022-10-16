@@ -169,6 +169,44 @@ func (_c *MockStore_GameByToken_Call) Return(_a0 *wording.Game, _a1 error) *Mock
 	return _c
 }
 
+// IncrementStats provides a mock function with given fields: ctx, stats
+func (_m *MockStore) IncrementStats(ctx context.Context, stats wording.IncrementStats) error {
+	ret := _m.Called(ctx, stats)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, wording.IncrementStats) error); ok {
+		r0 = rf(ctx, stats)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// MockStore_IncrementStats_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'IncrementStats'
+type MockStore_IncrementStats_Call struct {
+	*mock.Call
+}
+
+// IncrementStats is a helper method to define mock.On call
+//  - ctx context.Context
+//  - stats wording.IncrementStats
+func (_e *MockStore_Expecter) IncrementStats(ctx interface{}, stats interface{}) *MockStore_IncrementStats_Call {
+	return &MockStore_IncrementStats_Call{Call: _e.mock.On("IncrementStats", ctx, stats)}
+}
+
+func (_c *MockStore_IncrementStats_Call) Run(run func(ctx context.Context, stats wording.IncrementStats)) *MockStore_IncrementStats_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(wording.IncrementStats))
+	})
+	return _c
+}
+
+func (_c *MockStore_IncrementStats_Call) Return(_a0 error) *MockStore_IncrementStats_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
 // Plays provides a mock function with given fields: ctx, gameToken, playerToken
 func (_m *MockStore) Plays(ctx context.Context, gameToken string, playerToken string) (*wording.Plays, error) {
 	ret := _m.Called(ctx, gameToken, playerToken)
@@ -254,6 +292,50 @@ func (_c *MockStore_PutPlays_Call) Run(run func(ctx context.Context, gameToken s
 
 func (_c *MockStore_PutPlays_Call) Return(_a0 error) *MockStore_PutPlays_Call {
 	_c.Call.Return(_a0)
+	return _c
+}
+
+// Stats provides a mock function with given fields: ctx
+func (_m *MockStore) Stats(ctx context.Context) (wording.Stats, error) {
+	ret := _m.Called(ctx)
+
+	var r0 wording.Stats
+	if rf, ok := ret.Get(0).(func(context.Context) wording.Stats); ok {
+		r0 = rf(ctx)
+	} else {
+		r0 = ret.Get(0).(wording.Stats)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
+		r1 = rf(ctx)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockStore_Stats_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Stats'
+type MockStore_Stats_Call struct {
+	*mock.Call
+}
+
+// Stats is a helper method to define mock.On call
+//  - ctx context.Context
+func (_e *MockStore_Expecter) Stats(ctx interface{}) *MockStore_Stats_Call {
+	return &MockStore_Stats_Call{Call: _e.mock.On("Stats", ctx)}
+}
+
+func (_c *MockStore_Stats_Call) Run(run func(ctx context.Context)) *MockStore_Stats_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context))
+	})
+	return _c
+}
+
+func (_c *MockStore_Stats_Call) Return(_a0 wording.Stats, _a1 error) *MockStore_Stats_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 

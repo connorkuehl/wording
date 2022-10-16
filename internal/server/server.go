@@ -4,10 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -25,6 +24,7 @@ type Service interface {
 	SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error
 	GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error)
 	NewPlayerToken(ctx context.Context) string
+	Stats(ctx context.Context) (wording.Stats, error)
 }
 
 type Server struct {
@@ -40,7 +40,15 @@ func New(baseURL string, svc Service) *Server {
 }
 
 func (s *Server) Home(w http.ResponseWriter, r *http.Request) {
-	_, err := io.Copy(w, strings.NewReader(view.Home()))
+	ctx := context.TODO()
+
+	stats, err := s.svc.Stats(ctx)
+	if err != nil {
+		// TODO
+		log.Println("read stats:", err)
+	}
+
+	err = view.Home{Stats: stats}.RenderTo(w)
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return

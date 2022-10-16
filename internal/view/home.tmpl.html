@@ -8,4 +8,8 @@
         <input type="text" name="expires_after" />
         <input type="submit" value="Create game" />
     </form>
+    <br />
+    <p>
+        {{ .Stats.GuessesMade }} guesses made across {{ .Stats.GamesCreated }} games.
+    </p>
 </html>

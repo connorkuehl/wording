@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/connorkuehl/wording/internal/store"
@@ -18,6 +19,8 @@ type Store interface {
 	GameByToken(ctx context.Context, token string) (*wording.Game, error)
 	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
 	PutPlays(ctx context.Context, gameToken, playerToken string, plays *wording.Plays) error
+	IncrementStats(ctx context.Context, stats wording.IncrementStats) error
+	Stats(ctx context.Context) (wording.Stats, error)
 }
 
 //go:generate mockery --name TokenGenerator --case underscore --with-expecter --testonly --inpackage
@@ -46,7 +49,18 @@ func (s *Service) CreateGame(
 	expiresAfter time.Duration,
 ) (*wording.Game, error) {
 	expiresAt := now().Add(expiresAfter)
-	return s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), s.gameTokenGenerator.NewToken(), answer, guessLimit, expiresAt)
+	game, err := s.store.CreateGame(ctx, s.adminTokenGenerator.NewToken(), s.gameTokenGenerator.NewToken(), answer, guessLimit, expiresAt)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.store.IncrementStats(ctx, wording.IncrementStats{Stats: wording.Stats{GamesCreated: 1}})
+	if err != nil {
+		// TODO
+		log.Println("increment:", err)
+	}
+
+	return game, nil
 }
 
 func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
@@ -98,6 +112,17 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 		return err
 	}
 
+	incWins := 0
+	if state.IsVictorious {
+		incWins = 1
+	}
+
+	err = s.store.IncrementStats(ctx, wording.IncrementStats{Stats: wording.Stats{GuessesMade: 1, GamesWon: incWins}})
+	if err != nil {
+		// TODO
+		log.Println("increment:", err)
+	}
+
 	return nil
 }
 
@@ -129,4 +154,8 @@ func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wo
 	}
 
 	return plays, nil
+}
+
+func (s *Service) Stats(ctx context.Context) (wording.Stats, error) {
+	return s.store.Stats(ctx)
 }

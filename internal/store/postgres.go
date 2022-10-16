@@ -136,3 +136,37 @@ func (s *PostgresStore) PutPlays(ctx context.Context, gameToken, playerToken str
 	_, err := s.db.ExecContext(ctx, query, args...)
 	return err
 }
+
+func (s *PostgresStore) IncrementStats(ctx context.Context, stats wording.IncrementStats) error {
+	query := `INSERT INTO stats (
+		scope,
+		games_created,
+		games_won,
+		guesses_made
+	) VALUES (
+		$1, $2, $3, $4
+	) ON CONFLICT (scope) DO UPDATE SET
+	games_created = stats.games_created + $2,
+	games_won = stats.games_won + $3,
+	guesses_made = stats.guesses_made + $4`
+	args := []any{wording.LifetimeScope, stats.GamesCreated, stats.GamesWon, stats.GuessesMade}
+
+	_, err := s.db.ExecContext(ctx, query, args...)
+	return err
+}
+
+func (s *PostgresStore) Stats(ctx context.Context) (wording.Stats, error) {
+	var stats wording.Stats
+
+	query := `SELECT games_created, games_won, guesses_made FROM stats WHERE scope = $1`
+	err := s.db.QueryRowContext(ctx, query, wording.LifetimeScope).
+		Scan(&stats.GamesCreated, &stats.GamesWon, &stats.GuessesMade)
+	if errors.Is(err, sql.ErrNoRows) {
+		err = nil
+	}
+	if err != nil {
+		return wording.Stats{}, err
+	}
+
+	return stats, nil
+}
