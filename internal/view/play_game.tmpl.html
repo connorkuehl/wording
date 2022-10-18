@@ -39,11 +39,7 @@
                     {{ range $index, $element := .GameState.Attempts }}
                     <li>
                         <strong>
-                            {{ range $i, $ch := $element }}
-                            <span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }}>
-                                {{ $ch.Value }}
-                            </span>
-                            {{ end }}
+                            {{ range $i, $ch := $element }}<span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }} >{{ $ch.Value }}</span>{{ end }}
                         </strong>
                     </li>
                     {{ end }}
