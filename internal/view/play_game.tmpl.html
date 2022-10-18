@@ -28,9 +28,9 @@
         <article>
             {{ if .GameState.CanContinue }}
             <form action="/game/{{ .Token }}" method="post">
-                <label for="guess">The word is:</label>
-                <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
-                <input type="submit" value="Guess!" />
+                <label for="guess" style="display: inline;">The word is:</label>
+                <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" style="display: inline;" />
+                <input type="submit" value="Guess!" style="display: inline;" />
             </form>
             {{ end }}
             <section>
