@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/connorkuehl/wording/internal/store"
 	"github.com/connorkuehl/wording/internal/wording"
@@ -52,6 +53,8 @@ func (s *Service) CreateGame(
 		return nil, fmt.Errorf("invalid input: %w", err)
 	}
 
+	answer = strings.ToLower(answer)
+
 	err = wording.ValidateGuessLimit(guessLimit)
 	if err != nil {
 		return nil, fmt.Errorf("invalid input: %w", err)
@@ -88,6 +91,8 @@ func (s *Service) GameByToken(ctx context.Context, token string) (*wording.Game,
 }
 
 func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error {
+	guess = strings.ToLower(guess)
+
 	game, err := s.store.GameByToken(ctx, gameToken)
 	if errors.Is(err, store.ErrNotFound) {
 		err = ErrNotFound
