@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 
@@ -167,6 +168,12 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
+	}
+
+	for _, attempt := range state.Attempts {
+		for i := range attempt {
+			attempt[i].Value = strings.ToUpper(attempt[i].Value)
+		}
 	}
 
 	padding := game.GuessLimit - len(state.Attempts)
