@@ -2,15 +2,24 @@
     <head>
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     </head>
-    <form action="/games" method="post">
-        <label for="answer">Answer:</label>
-        <input type="text" name="answer"/><br />
-        <label for="num_attempts">Guesses allowed:</label>
-        <input type="text" name="num_attempts"/><br />
-        <input type="submit" value="Create game" />
-    </form>
-    <br />
-    <p>
-        {{ .Stats.GuessesMade }} guesses made across {{ .Stats.GamesCreated }} games.
-    </p>
+    <body>
+        <summary>
+            <p><em>Make a Wordle-style puzzle and share it with your friends</em></p>
+        </summary>
+        <main>
+            <form action="/games" method="post">
+                <label for="answer">Answer:</label>
+                <input type="text" name="answer"/><br />
+                <label for="num_attempts">Guesses allowed:</label>
+                <input type="text" name="num_attempts"/><br />
+                <input type="submit" value="Create game" />
+            </form>
+        </main>
+        <footer>
+            <p>
+            {{ .Stats.GamesCreated }} games created, {{ .Stats.GuessesMade }} guesses made,
+            {{ .Stats.GamesWon }} games won!
+            </p>
+        </footer>
+    </body>
 </html>

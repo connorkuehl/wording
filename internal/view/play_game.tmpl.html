@@ -12,38 +12,43 @@
     </style>
     </head>
     <body>
-        <section>
-            {{ if not .GameState.CanContinue }}
-            <h1>
-                {{ if .GameState.IsVictorious }}
-                You are victorious!
-                {{ else }}
-                You lost :(
-                {{ end }}
-            </h1>
+        {{ if not .GameState.CanContinue }}
+        <h1>
+            {{ if .GameState.IsVictorious }}
+            You are victorious!
+            {{ else }}
+            You lost :(
             {{ end }}
-            </section>
-        <section>
+        </h1>
+        {{ else }}
+        <summary>
             <p>The word has {{ .Length }} letters.</p>
+        </summary>
+        {{ end }}
+        <article>
+            {{ if .GameState.CanContinue }}
             <form action="/game/{{ .Token }}" method="post">
                 <label for="guess">The word is:</label>
                 <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" />
                 <input type="submit" value="Guess!" />
             </form>
-        </section>
-        <section>
-            <p>Your guesses:</p>
-            <ul>
-                {{ range $index, $element := .GameState.Attempts }}
-                <li>
-                    {{ range $i, $ch := $element }}
-                    <span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }}>
-                        {{ $ch.Value }}
-                    </span>
+            {{ end }}
+            <section>
+                <p>Your guesses:</p>
+                <ol>
+                    {{ range $index, $element := .GameState.Attempts }}
+                    <li>
+                        <strong>
+                            {{ range $i, $ch := $element }}
+                            <span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }}>
+                                {{ $ch.Value }}
+                            </span>
+                            {{ end }}
+                        </strong>
+                    </li>
                     {{ end }}
-                </li>
-                {{ end }}
-            </ul>
-        </section>
+                </ol>
+            </section>
+        </article>
     </body>
 </html>
