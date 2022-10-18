@@ -56,5 +56,5 @@ func main() {
 	router.Post("/game/{token}", srv.Guess)
 	router.Post("/manage/{admin_token}/delete", srv.DeleteGame)
 
-	log.Fatal(http.ListenAndServe(cfg.bind, router))
+	log.Fatal(http.ListenAndServe(config.bind, router))
 }
