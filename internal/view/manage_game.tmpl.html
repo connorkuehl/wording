@@ -2,22 +2,26 @@
     <head>
         <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     </head>
-    <p>Player Link: <a href="/game/{{ .Token }}">{{ .BaseURL }}/game/{{ .Token }}</a>.</p>
-    <p>
-        The answer is <strong>{{ .Answer }}</strong>.<br />
-        Players are allowed {{ .GuessesAllowed }} guesses.
-    </p>
-    <p>
-        Guesses made: {{ .GuessesMade }}.<br />
-        Correct guesses: {{ .CorrectGuesses }}.
-    </p>
-    <hr />
-    <p>
-        WARNING: <b>DO NOT</b> share your admin link, it is like a
-        password that others can use to modify your game.
-    </p>
-    <p>Admin Link: <a href="/manage/{{ .AdminToken }}">{{ .BaseURL }}/manage/{{ .AdminToken}}</a>.</p>
-    <form action="/manage/{{ .AdminToken }}/delete" method="post">
-        <input type="submit" value="Delete game (irreversible)" />
-    </form>
+    <body>
+        <section>
+            <p>Player Link: <a href="/game/{{ .Token }}">{{ .BaseURL }}/game/{{ .Token }}</a>.</p>
+            <p>
+                The answer is <strong>{{ .Answer }}</strong>.<br />
+                Players are allowed {{ .GuessesAllowed }} guesses.
+            </p>
+            <p>
+                Guesses made: {{ .GuessesMade }}.<br />
+                Correct guesses: {{ .CorrectGuesses }}.
+            </p>
+            <hr />
+            <p>
+                WARNING: <b>DO NOT</b> share your admin link, it is like a
+                password that others can use to modify your game.
+            </p>
+            <p>Admin Link: <a href="/manage/{{ .AdminToken }}">{{ .BaseURL }}/manage/{{ .AdminToken}}</a>.</p>
+            <form action="/manage/{{ .AdminToken }}/delete" method="post">
+                <input type="submit" value="Delete game (irreversible)" />
+            </form>
+        </section>
+    </body>
 </html>
