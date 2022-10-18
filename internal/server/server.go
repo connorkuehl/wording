@@ -169,6 +169,11 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	padding := game.GuessLimit - len(state.Attempts)
+	for i := 0; i < padding; i++ {
+		state.Attempts = append(state.Attempts, wording.Attempt{})
+	}
+
 	err = view.PlayGame{
 		Token:     token,
 		Length:    len(game.Answer),
