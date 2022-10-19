@@ -19,14 +19,16 @@ import (
 
 func main() {
 	var config struct {
-		baseURL string
-		dsn     string
-		bind    string
+		baseURL    string
+		dsn        string
+		bind       string
+		wordGenSvc string
 	}
 
 	flag.StringVar(&config.baseURL, "base-url", os.Getenv("WORDING_BASE_URL"), "Base URL to prefix links with")
 	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 	flag.StringVar(&config.bind, "bind-addr", os.Getenv("WORDING_BIND_ADDR"), "Bind address")
+	flag.StringVar(&config.wordGenSvc, "word-gen-svc", os.Getenv("WORDING_WORD_GEN_SVC"), "Word generator API")
 	flag.Parse()
 
 	log.WithFields(log.Fields{
@@ -44,7 +46,10 @@ func main() {
 
 	rand.Seed(time.Now().UnixNano())
 	adminTokenGenerator := generator.NewUUIDGenerator()
-	gameTokenGenerator := generator.NewHumanReadableGenerator(rand.Int)
+	gameTokenGenerator := generator.NewRandomWordClient(
+		config.wordGenSvc,
+		generator.NewHumanReadableGenerator(rand.Int),
+	)
 
 	svc := service.New(store, adminTokenGenerator, gameTokenGenerator)
 	srv := server.New(config.baseURL, svc)
