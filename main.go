@@ -32,8 +32,9 @@ func main() {
 	flag.Parse()
 
 	log.WithFields(log.Fields{
-		"bind-addr": config.bind,
-		"base-url":  config.baseURL,
+		"bind-addr":    config.bind,
+		"base-url":     config.baseURL,
+		"word-gen-svc": config.wordGenSvc,
 	}).Info("starting up")
 
 	store, err := store.NewPostgresStore(config.dsn)
