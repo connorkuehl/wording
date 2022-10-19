@@ -1,53 +1,56 @@
 <!doctype html>
-    <head>
-        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+<head>
+    <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
     <style type="text/css">
-        .correct {
-            color: mediumseagreen;
-        }
+.correct {
+    color: mediumseagreen;
+}
 
         .partial {
             color: orange;
         }
     </style>
-    </head>
-    <body>
-        {{ if not .GameState.CanContinue }}
-        <h1>
-            {{ if .GameState.IsVictorious }}
-            You are victorious!
-            {{ else }}
-            You lost :(
-            {{ end }}
-        </h1>
+</head>
+<body>
+    {{ if not .GameState.CanContinue }}
+    <h1>
+        {{ if .GameState.IsVictorious }}
+        You are victorious!
         {{ else }}
-        <header>
-            <h3>Guess the word!</h3>
-        </header>
-        <summary>
-            <p>The word has {{ .Length }} letters.</p>
-        </summary>
+        You lost :(
         {{ end }}
-        <article>
-            {{ if .GameState.CanContinue }}
-            <form action="/game/{{ .Token }}" method="post">
-                <label for="guess" style="display: inline;">The word is:</label>
-                <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" style="display: inline;" autofocus />
-                <input type="submit" value="Guess!" style="display: inline;" />
-            </form>
-            {{ end }}
-            <section>
-                <p>Your guesses:</p>
-                <ol>
-                    {{ range $index, $element := .GameState.Attempts }}
-                    <li>
-                        <strong>
-                            {{ range $i, $ch := $element }}<span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }} >{{ $ch.Value }}</span>{{ end }}
-                        </strong>
-                    </li>
-                    {{ end }}
-                </ol>
-            </section>
-        </article>
-    </body>
+    </h1>
+    {{ else }}
+    <header>
+        <h3>Guess the word!</h3>
+    </header>
+    <summary>
+        <p>The word has {{ .Length }} letters.</p>
+    </summary>
+    {{ end }}
+    <article>
+        {{ if .GameState.CanContinue }}
+        <form action="/game/{{ .Token }}" method="post">
+            <label for="guess" style="display: inline;">The word is:</label>
+            <input id="guess" name="guess" minlength="{{ .Length }}" maxlength="{{ .Length }}" style="display: inline;" autofocus />
+            <input type="submit" value="Guess!" style="display: inline;" />
+        </form>
+        {{ end }}
+        <section>
+            <p>Your guesses:</p>
+            <ol>
+                {{ range $index, $element := .GameState.Attempts }}
+                <li>
+                    <strong>
+                        {{ range $i, $ch := $element }}<span {{ if $ch.IsCorrect }} class="correct" {{ else if $ch.IsPartial }} class="partial" {{ end }} >{{ $ch.Value }}</span>{{ end }}
+                    </strong>
+                </li>
+                {{ end }}
+            </ol>
+        </section>
+    </article>
+    <footer>
+        <p><a href="/">Create your own game!</a></p>
+    </footer>
+</body>
 </html>
