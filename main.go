@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/connorkuehl/wording/internal/generator"
 	"github.com/connorkuehl/wording/internal/server"
@@ -27,14 +27,20 @@ func main() {
 	flag.StringVar(&config.baseURL, "base-url", "http://localhost:8080", "Base URL to prefix links with")
 	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 	flag.StringVar(&config.bind, "bind-addr", os.Getenv("WORDING_BIND_ADDR"), "Bind address")
-
 	flag.Parse()
+
+	log.WithFields(log.Fields{
+		"bind-addr": config.bind,
+		"base-url":  config.baseURL,
+	})
 
 	store, err := store.NewPostgresStore(config.dsn)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer store.Close()
+
+	log.Info("connected to database")
 
 	rand.Seed(time.Now().UnixNano())
 	adminTokenGenerator := generator.NewUUIDGenerator()
@@ -58,5 +64,6 @@ func main() {
 	router.Get("/health", func(_ http.ResponseWriter, _ *http.Request) {
 	})
 
+	log.Info("listening")
 	log.Fatal(http.ListenAndServe(config.bind, router))
 }
