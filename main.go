@@ -19,12 +19,22 @@ import (
 
 func main() {
 	var config struct {
-		baseURL    string
-		dsn        string
-		bind       string
-		wordGenSvc string
+		environment string
+		baseURL     string
+		dsn         string
+		bind        string
+		wordGenSvc  string
 	}
 
+	fromEnvOr := func(key, fallback string) string {
+		s := os.Getenv(key)
+		if s == "" {
+			return fallback
+		}
+		return s
+	}
+
+	flag.StringVar(&config.environment, "environment", fromEnvOr("WORDING_ENVIRONMENT", "dev"), "Environment")
 	flag.StringVar(&config.baseURL, "base-url", os.Getenv("WORDING_BASE_URL"), "Base URL to prefix links with")
 	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 	flag.StringVar(&config.bind, "bind-addr", os.Getenv("WORDING_BIND_ADDR"), "Bind address")
