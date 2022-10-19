@@ -21,7 +21,7 @@ func main() {
 	var config struct {
 		environment string
 		baseURL     string
-		dsn         string
+		dbDSN       string
 		bind        string
 		wordGenSvc  string
 	}
@@ -36,7 +36,7 @@ func main() {
 
 	flag.StringVar(&config.environment, "environment", fromEnvOr("WORDING_ENVIRONMENT", "dev"), "Environment")
 	flag.StringVar(&config.baseURL, "base-url", os.Getenv("WORDING_BASE_URL"), "Base URL to prefix links with")
-	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
+	flag.StringVar(&config.dbDSN, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 	flag.StringVar(&config.bind, "bind-addr", os.Getenv("WORDING_BIND_ADDR"), "Bind address")
 	flag.StringVar(&config.wordGenSvc, "word-gen-svc", os.Getenv("WORDING_WORD_GEN_SVC"), "Word generator API")
 	flag.Parse()
@@ -47,7 +47,7 @@ func main() {
 		"word-gen-svc": config.wordGenSvc,
 	}).Info("starting up")
 
-	store, err := store.NewPostgresStore(config.dsn)
+	store, err := store.NewPostgresStore(config.dbDSN)
 	if err != nil {
 		log.Fatal(err)
 	}
