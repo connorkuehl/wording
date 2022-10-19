@@ -24,7 +24,7 @@ func main() {
 		bind    string
 	}
 
-	flag.StringVar(&config.baseURL, "base-url", "http://localhost:8080", "Base URL to prefix links with")
+	flag.StringVar(&config.baseURL, "base-url", os.Getenv("WORDING_BASE_URL"), "Base URL to prefix links with")
 	flag.StringVar(&config.dsn, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 	flag.StringVar(&config.bind, "bind-addr", os.Getenv("WORDING_BIND_ADDR"), "Bind address")
 	flag.Parse()
