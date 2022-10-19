@@ -32,10 +32,10 @@ func isExceptional(err error) bool {
 }
 
 type Sentry struct {
-	*Service
+	Service
 }
 
-func NewSentry(svc *Service) *Sentry {
+func NewSentry(svc Service) *Sentry {
 	return &Sentry{svc}
 }
 

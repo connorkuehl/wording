@@ -76,13 +76,12 @@ func main() {
 		generator.NewHumanReadableGenerator(rand.Int),
 	)
 
-	svc := service.New(store, adminTokenGenerator, gameTokenGenerator)
-	var impl server.Service = svc
+	var svc service.Service = service.New(store, adminTokenGenerator, gameTokenGenerator)
 	if config.sentryDSN != "" {
 		log.Info("enabling sentry proxy")
-		impl = service.NewSentry(svc)
+		svc = service.NewSentry(svc)
 	}
-	srv := server.New(config.baseURL, impl)
+	srv := server.New(config.baseURL, svc)
 
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)

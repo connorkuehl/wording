@@ -29,21 +29,34 @@ type TokenGenerator interface {
 	NewToken() string
 }
 
-type Service struct {
+type Service interface {
+	CreateGame(ctx context.Context, answer string, guessLimit int) (*wording.Game, error)
+	DeleteGame(ctx context.Context, adminToken string) error
+	Game(ctx context.Context, adminToken string) (*wording.Game, error)
+	GameByToken(ctx context.Context, token string) (*wording.Game, error)
+	GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error)
+	GameStats(ctx context.Context, adminToken string) (wording.Stats, error)
+	NewPlayerToken(ctx context.Context) string
+	Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error)
+	Stats(ctx context.Context) (wording.Stats, error)
+	SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error
+}
+
+type service struct {
 	store               Store
 	adminTokenGenerator TokenGenerator
 	gameTokenGenerator  TokenGenerator
 }
 
-func New(store Store, adminTokenGenerator, gameTokenGenerator TokenGenerator) *Service {
-	return &Service{
+func New(store Store, adminTokenGenerator, gameTokenGenerator TokenGenerator) *service {
+	return &service{
 		store:               store,
 		adminTokenGenerator: adminTokenGenerator,
 		gameTokenGenerator:  gameTokenGenerator,
 	}
 }
 
-func (s *Service) CreateGame(
+func (s *service) CreateGame(
 	ctx context.Context,
 	answer string,
 	guessLimit int,
@@ -74,7 +87,7 @@ func (s *Service) CreateGame(
 	return game, nil
 }
 
-func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
+func (s *service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
 	game, err := s.store.Game(ctx, adminToken)
 	if errors.Is(err, store.ErrNotFound) {
 		err = ErrNotFound
@@ -82,7 +95,7 @@ func (s *Service) Game(ctx context.Context, adminToken string) (*wording.Game, e
 	return game, err
 }
 
-func (s *Service) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
+func (s *service) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
 	game, err := s.store.GameByToken(ctx, token)
 	if errors.Is(err, store.ErrNotFound) {
 		err = ErrNotFound
@@ -90,7 +103,7 @@ func (s *Service) GameByToken(ctx context.Context, token string) (*wording.Game,
 	return game, err
 }
 
-func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error {
+func (s *service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error {
 	guess = strings.ToLower(guess)
 
 	game, err := s.store.GameByToken(ctx, gameToken)
@@ -150,11 +163,11 @@ func (s *Service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 	return nil
 }
 
-func (s *Service) NewPlayerToken(ctx context.Context) string {
+func (s *service) NewPlayerToken(ctx context.Context) string {
 	return s.adminTokenGenerator.NewToken()
 }
 
-func (s *Service) GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error) {
+func (s *service) GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error) {
 	game, err := s.store.GameByToken(ctx, gameToken)
 	if errors.Is(err, store.ErrNotFound) {
 		return nil, ErrNotFound
@@ -168,7 +181,7 @@ func (s *Service) GameState(ctx context.Context, gameToken, playerToken string) 
 	return plays.Evaluate(game.Answer, game.GuessLimit), nil
 }
 
-func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
+func (s *service) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
 	plays, err := s.store.Plays(ctx, gameToken, playerToken)
 	if errors.Is(err, store.ErrNotFound) {
 		return new(wording.Plays), nil
@@ -180,11 +193,11 @@ func (s *Service) Plays(ctx context.Context, gameToken, playerToken string) (*wo
 	return plays, nil
 }
 
-func (s *Service) Stats(ctx context.Context) (wording.Stats, error) {
+func (s *service) Stats(ctx context.Context) (wording.Stats, error) {
 	return s.store.Stats(ctx)
 }
 
-func (s *Service) DeleteGame(ctx context.Context, adminToken string) error {
+func (s *service) DeleteGame(ctx context.Context, adminToken string) error {
 	err := s.store.DeleteGame(ctx, adminToken)
 	if errors.Is(err, store.ErrNotFound) {
 		err = ErrNotFound
@@ -192,6 +205,6 @@ func (s *Service) DeleteGame(ctx context.Context, adminToken string) error {
 	return err
 }
 
-func (s *Service) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
+func (s *service) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
 	return s.store.GameStats(ctx, adminToken)
 }
