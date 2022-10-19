@@ -32,7 +32,7 @@ func main() {
 	log.WithFields(log.Fields{
 		"bind-addr": config.bind,
 		"base-url":  config.baseURL,
-	})
+	}).Info("starting up")
 
 	store, err := store.NewPostgresStore(config.dsn)
 	if err != nil {
