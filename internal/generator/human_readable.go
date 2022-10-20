@@ -73,7 +73,8 @@ type RandomWordClient struct {
 
 func NewRandomWordClient(baseURL string, fallback interface{ NewToken() string }) *RandomWordClient {
 	return &RandomWordClient{
-		baseURL: baseURL,
+		baseURL:  baseURL,
+		fallback: fallback,
 	}
 }
 
