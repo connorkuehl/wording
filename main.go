@@ -73,7 +73,7 @@ func main() {
 	adminTokenGenerator := generator.NewUUIDGenerator()
 	gameTokenGenerator := generator.NewRandomWordClient(
 		config.wordGenSvc,
-		generator.NewHumanReadableGenerator(rand.Int),
+		generator.NewUUIDGenerator(),
 	)
 
 	var svc service.Service = service.New(store, adminTokenGenerator, gameTokenGenerator)
