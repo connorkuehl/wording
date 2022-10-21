@@ -1,6 +1,6 @@
 # wording
 
-Create bite-sized custom Wordle-style puzzles to share with your
+Create bite-sized custom guess-the-word puzzles to share with your
 friends.
 
 ![](https://github.com/connorkuehl/wording/blob/assets/.github/static/home.png)
