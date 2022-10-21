@@ -3,46 +3,14 @@
 Create bite-sized custom Wordle-style puzzles to share with your
 friends.
 
-# Requirements
+<center>
+![](https://raw.githubusercontent.com/connorkuehl/wording/assets/.github/static/home.png?token=GHSAT0AAAAAABZHU6VJD3V4ZCAUZABGT4LMY2R4DWA)
+</center>
 
-- [x] The top-level/index page displays a count of:
-  - [x] Games created
-  - [x] Guesses cast
-  - [x] Correct guesses
-- [x] A visitor can create a game from the top-level/index page.
-- [x] A game creator can create a game and share a link to the puzzle they
-      created.
-- [x] A game creator is given a secret management URL at time of create so
-      they can manage the game.
-- [x] A game creator can specify the number of attempts players will have for
-      the game (up to a defined maximum.)
-- [x] A game creator cannot modify guess limits for a game that has already
-      been created.
-- [x] A game creator can permanently delete the game with their management URL.
-- [ ] A game creator can choose whether or not the answer is displayed to a
-      player who has exhausted all of their guess attempts.
-- [x] The game collects the following statistics for each game:
-  - [x] Total attempts
-  - [x] Number of correct guesses
-- [x] The UI presents visual feedback for guesses:
-  - [x] Gray means a letter is not included in the word.
-  - [x] Yellow means a letter is included in the word but is in the wrong
-  spot.
-  - [x] Green means the letter is included in the word and is in the correct
-position.
-- [x] A player is not able to submit a guess if:
-  - [x] they have already guessed the correct answer;
-  - [x] or they have no votes remaining.
-- [x] A player's participation in a game is tracked and shown when they visit
-      the puzzle.
-- [x] A guess is not submitted if:
-  - [x] the guess is not completely alphabetical (no whitespace, no numbers,
-        no symbols);
-  - [x] the player has already guessed that word;
-  - [x] the guess is not the same length as the answer;
-  - [x] the player has no guesses remaining;
-- [ ] The UI offers feedback for input validation:
-  - [ ] guess length must be exactly the length of the answer;
-  - [ ] remaining attempts are disabled when the game is over;
-- [ ] Games are automatically deleted once their access time is greater than
-      a certain duration.
+<center>
+![](https://raw.githubusercontent.com/connorkuehl/wording/assets/.github/static/manage.png?token=GHSAT0AAAAAABZHU6VI72XBD5ODBFAKMHOMY2R4EWA)
+</center>
+
+<center>
+![](https://raw.githubusercontent.com/connorkuehl/wording/assets/.github/static/gameplay.png?token=GHSAT0AAAAAABZHU6VJUMR2W42OCHOWNADGY2R4ELQ)
+</center>
