@@ -24,11 +24,7 @@ func isExceptional(err error) bool {
 	}
 
 	var badInput wording.InputViolations
-	if errors.As(err, &badInput) {
-		return false
-	}
-
-	return true
+	return !errors.As(err, &badInput)
 }
 
 type Sentry struct {

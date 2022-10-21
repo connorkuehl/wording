@@ -67,7 +67,7 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 		numAttempts int
 	)
 
-	r.ParseForm()
+	_ = r.ParseForm()
 
 	answer = r.PostFormValue("answer")
 	if answer == "" {
@@ -206,7 +206,7 @@ func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 		id = idCookie.Value
 	}
 
-	r.ParseForm()
+	_ = r.ParseForm()
 
 	guess := r.PostForm.Get("guess")
 

@@ -76,7 +76,7 @@ func (s *PostgresStore) Game(ctx context.Context, adminToken string) (*wording.G
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	query := `SELECT token, answer, guess_limit FROM games WHERE admin_token = $1`
 
@@ -103,7 +103,7 @@ func (s *PostgresStore) GameByToken(ctx context.Context, token string) (*wording
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	query := `SELECT admin_token, answer, guess_limit FROM games WHERE token = $1`
 
@@ -132,7 +132,7 @@ func (s *PostgresStore) Plays(ctx context.Context, gameToken, playerToken string
 	if err != nil {
 		return nil, err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	plays := &wording.Plays{}
 
@@ -155,7 +155,7 @@ func (s *PostgresStore) PutPlays(ctx context.Context, gameToken, playerToken str
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	query := `INSERT INTO attempts (
 		game_token,
@@ -226,7 +226,7 @@ func (s *PostgresStore) GameStats(ctx context.Context, adminToken string) (wordi
 	if err != nil {
 		return stats, err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	query := `SELECT COUNT(*)
 	FROM attempts WHERE
@@ -261,7 +261,7 @@ func (s *PostgresStore) DeleteGame(ctx context.Context, adminToken string) error
 	if err != nil {
 		return err
 	}
-	defer tx.Rollback()
+	defer func() { _ = tx.Rollback() }()
 
 	_, err = tx.ExecContext(ctx, `DELETE FROM attempts WHERE game_token = (SELECT token FROM games WHERE admin_token = $1)`, adminToken)
 	if err != nil {
