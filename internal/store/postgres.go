@@ -11,10 +11,12 @@ import (
 	"github.com/connorkuehl/wording/internal/wording"
 )
 
+// PostgresStore is a PostgreSQL-backed persistence layer for the game.
 type PostgresStore struct {
 	db *sql.DB
 }
 
+// NewPostgresStore opens a connection to the Postgres store.
 func NewPostgresStore(dsn string) (*PostgresStore, error) {
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
@@ -37,10 +39,12 @@ func NewPostgresStore(dsn string) (*PostgresStore, error) {
 	return s, nil
 }
 
+// Close closes the connection to the Postgres store.
 func (s *PostgresStore) Close() error {
 	return s.db.Close()
 }
 
+// CreateGame creates a game.
 func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, token, answer string, guessLimit int) (*wording.Game, error) {
 	query := `
 	INSERT INTO games (
@@ -71,6 +75,7 @@ func (s *PostgresStore) CreateGame(ctx context.Context, adminToken, token, answe
 	return game, nil
 }
 
+// Game fetches a game.
 func (s *PostgresStore) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -98,6 +103,7 @@ func (s *PostgresStore) Game(ctx context.Context, adminToken string) (*wording.G
 	return &game, tx.Commit()
 }
 
+// GameByToken fetches a game by the the specified token.
 func (s *PostgresStore) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -127,6 +133,7 @@ func (s *PostgresStore) GameByToken(ctx context.Context, token string) (*wording
 	return &game, tx.Commit()
 }
 
+// Plays fetches a player's attempts against a given game.
 func (s *PostgresStore) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -150,6 +157,7 @@ func (s *PostgresStore) Plays(ctx context.Context, gameToken, playerToken string
 	return plays, tx.Commit()
 }
 
+// PutPlays updates a player's attempts against a game.
 func (s *PostgresStore) PutPlays(ctx context.Context, gameToken, playerToken string, plays *wording.Plays) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -185,6 +193,7 @@ func (s *PostgresStore) PutPlays(ctx context.Context, gameToken, playerToken str
 	return tx.Commit()
 }
 
+// IncrementStats adjusts overall stats for the application.
 func (s *PostgresStore) IncrementStats(ctx context.Context, stats wording.IncrementStats) error {
 	query := `INSERT INTO stats (
 		scope,
@@ -203,6 +212,7 @@ func (s *PostgresStore) IncrementStats(ctx context.Context, stats wording.Increm
 	return err
 }
 
+// Stats fetches the overall lifetime stats.
 func (s *PostgresStore) Stats(ctx context.Context) (wording.Stats, error) {
 	var stats wording.Stats
 
@@ -219,6 +229,7 @@ func (s *PostgresStore) Stats(ctx context.Context) (wording.Stats, error) {
 	return stats, nil
 }
 
+// GameStats fetches stats for an individual game.
 func (s *PostgresStore) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
 	var stats wording.Stats
 
@@ -256,6 +267,7 @@ func (s *PostgresStore) GameStats(ctx context.Context, adminToken string) (wordi
 	return stats, tx.Commit()
 }
 
+// DeleteGame deletes the game and all of the attempts recorded against it.
 func (s *PostgresStore) DeleteGame(ctx context.Context, adminToken string) error {
 	tx, err := s.db.BeginTx(ctx, nil)
 	if err != nil {
