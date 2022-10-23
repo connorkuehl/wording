@@ -1,2 +1,3 @@
 /wording
 .envrc
+*.sw[op]
