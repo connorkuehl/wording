@@ -2,10 +2,8 @@ package main
 
 import (
 	"flag"
-	"math/rand"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/go-chi/chi/v5"
@@ -13,6 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/connorkuehl/wording/internal/generator"
+	"github.com/connorkuehl/wording/internal/randword"
 	"github.com/connorkuehl/wording/internal/server"
 	"github.com/connorkuehl/wording/internal/service"
 	"github.com/connorkuehl/wording/internal/store"
@@ -69,10 +68,9 @@ func main() {
 
 	log.Info("connected to database")
 
-	rand.Seed(time.Now().UnixNano())
 	adminTokenGenerator := generator.NewUUIDGenerator()
-	gameTokenGenerator := generator.NewRandomWordClient(
-		config.wordGenSvc,
+	gameTokenGenerator := generator.NewFallibleGenerator(
+		generator.NewHumanReadable(randword.NewClient(config.wordGenSvc)),
 		generator.NewUUIDGenerator(),
 	)
 
