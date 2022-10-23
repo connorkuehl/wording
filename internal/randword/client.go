@@ -1,3 +1,4 @@
+// Package randword provides a client to the random word generator API.
 package randword
 
 import (
