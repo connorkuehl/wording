@@ -31,11 +31,13 @@ type Service interface {
 	GameStats(ctx context.Context, adminToken string) (wording.Stats, error)
 }
 
+// Server is the HTTP "edge" of the web application.
 type Server struct {
 	baseURL string
 	svc     Service
 }
 
+// New creates a new Server.
 func New(baseURL string, svc Service) *Server {
 	return &Server{
 		baseURL: baseURL,
@@ -43,6 +45,7 @@ func New(baseURL string, svc Service) *Server {
 	}
 }
 
+// Home renders the root of the site, which is the game creation page.
 func (s *Server) Home(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
@@ -59,6 +62,7 @@ func (s *Server) Home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// CreateGame handles incoming POST forms for creating a new game.
 func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
@@ -97,6 +101,8 @@ func (s *Server) CreateGame(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf("/manage/%s", game.AdminToken), http.StatusSeeOther)
 }
 
+// ManageGame renders the manage game page, where a game's stats are shown and it
+// can optionally be deleted.
 func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
@@ -137,6 +143,7 @@ func (s *Server) ManageGame(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// PlayGame renders the play game page.
 func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
@@ -192,6 +199,7 @@ func (s *Server) PlayGame(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Guess handles the POST form data for a player submitting a guess for a game.
 func (s *Server) Guess(w http.ResponseWriter, r *http.Request) {
 	ctx := context.TODO()
 
