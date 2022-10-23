@@ -48,6 +48,7 @@ type service struct {
 	gameTokenGenerator  TokenGenerator
 }
 
+// New creates a new service.
 func New(store Store, adminTokenGenerator, gameTokenGenerator TokenGenerator) *service {
 	return &service{
 		store:               store,
@@ -56,6 +57,7 @@ func New(store Store, adminTokenGenerator, gameTokenGenerator TokenGenerator) *s
 	}
 }
 
+// CreateGame creates a new guess-the-word game.
 func (s *service) CreateGame(
 	ctx context.Context,
 	answer string,
@@ -87,6 +89,7 @@ func (s *service) CreateGame(
 	return game, nil
 }
 
+// Game fetches the game identified by the adminToken.
 func (s *service) Game(ctx context.Context, adminToken string) (*wording.Game, error) {
 	game, err := s.store.Game(ctx, adminToken)
 	if errors.Is(err, store.ErrNotFound) {
@@ -95,6 +98,7 @@ func (s *service) Game(ctx context.Context, adminToken string) (*wording.Game, e
 	return game, err
 }
 
+// GameByToken fetches the game identified by token.
 func (s *service) GameByToken(ctx context.Context, token string) (*wording.Game, error) {
 	game, err := s.store.GameByToken(ctx, token)
 	if errors.Is(err, store.ErrNotFound) {
@@ -103,6 +107,7 @@ func (s *service) GameByToken(ctx context.Context, token string) (*wording.Game,
 	return game, err
 }
 
+// SubmitGuess records the player's guess.
 func (s *service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess string) error {
 	guess = strings.ToLower(guess)
 
@@ -163,10 +168,12 @@ func (s *service) SubmitGuess(ctx context.Context, gameToken, playerToken, guess
 	return nil
 }
 
+// NewPlayerToken allocates a new player token.
 func (s *service) NewPlayerToken(ctx context.Context) string {
 	return s.adminTokenGenerator.NewToken()
 }
 
+// GameState returns a snapshot of a player's progress against a given game.
 func (s *service) GameState(ctx context.Context, gameToken, playerToken string) (*wording.GameState, error) {
 	game, err := s.store.GameByToken(ctx, gameToken)
 	if errors.Is(err, store.ErrNotFound) {
@@ -181,6 +188,7 @@ func (s *service) GameState(ctx context.Context, gameToken, playerToken string) 
 	return plays.Evaluate(game.Answer, game.GuessLimit), nil
 }
 
+// Plays fetches a player's attempts against a game.
 func (s *service) Plays(ctx context.Context, gameToken, playerToken string) (*wording.Plays, error) {
 	plays, err := s.store.Plays(ctx, gameToken, playerToken)
 	if errors.Is(err, store.ErrNotFound) {
@@ -193,10 +201,12 @@ func (s *service) Plays(ctx context.Context, gameToken, playerToken string) (*wo
 	return plays, nil
 }
 
+// Stats fetches the application's lifetime stats.
 func (s *service) Stats(ctx context.Context) (wording.Stats, error) {
 	return s.store.Stats(ctx)
 }
 
+// DeleteGame deletes the specified game and all of the attempts made against it.
 func (s *service) DeleteGame(ctx context.Context, adminToken string) error {
 	err := s.store.DeleteGame(ctx, adminToken)
 	if errors.Is(err, store.ErrNotFound) {
@@ -205,6 +215,7 @@ func (s *service) DeleteGame(ctx context.Context, adminToken string) error {
 	return err
 }
 
+// GameStats returns a specific game's stats.
 func (s *service) GameStats(ctx context.Context, adminToken string) (wording.Stats, error) {
 	return s.store.GameStats(ctx, adminToken)
 }
