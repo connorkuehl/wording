@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Game is a guess-the-word-style game.
 type Game struct {
 	AdminToken string
 	Token      string
@@ -13,14 +14,19 @@ type Game struct {
 	GuessLimit int
 }
 
+// Character is a letter that a player has entered as part
+// of their guess.
 type Character struct {
 	Value     string
 	IsCorrect bool
 	IsPartial bool
 }
 
+// Attempt is a list of characters that the player has entered as part
+// of their guess.
 type Attempt []Character
 
+// String converts an attempt into a string.
 func (a Attempt) String() string {
 	var s strings.Builder
 
@@ -31,6 +37,7 @@ func (a Attempt) String() string {
 	return s.String()
 }
 
+// GameState is a snapshot of a player's progress against a game.
 type GameState struct {
 	Attempts     []Attempt
 	CanContinue  bool
@@ -38,6 +45,8 @@ type GameState struct {
 	GameOver     bool
 }
 
+// Evaluate inspects a player's guess and provides necessary decoration/
+// bookkeeping to provide feedback to the player.
 func Evaluate(answer, guess string) Attempt {
 	// TODO: consider making a type that maintains the
 	// invariant that both answer and guess must be same
@@ -71,12 +80,15 @@ func Evaluate(answer, guess string) Attempt {
 	return at
 }
 
+// InputViolations record input errors that need to be corrected.
 type InputViolations map[string][]error
 
+// Error collects the input violations into a human-readable string.
 func (i InputViolations) Error() string {
 	return fmt.Sprintf("%v", map[string][]error(i))
 }
 
+// ValidateGuessLimit validates a user-provided limit.
 func ValidateGuessLimit(limit int) error {
 	violations := make(InputViolations)
 
@@ -91,6 +103,7 @@ func ValidateGuessLimit(limit int) error {
 	return nil
 }
 
+// ValidateAnswer validates a user-supplied answer.
 func ValidateAnswer(answer string) error {
 	violations := make(InputViolations)
 
@@ -105,6 +118,7 @@ func ValidateAnswer(answer string) error {
 	return nil
 }
 
+// ValidateGuess validates a user-supplied guess.
 func ValidateGuess(guess, answer string, previousGuesses []string) error {
 	violations := make(InputViolations)
 
@@ -129,6 +143,7 @@ func ValidateGuess(guess, answer string, previousGuesses []string) error {
 	return nil
 }
 
+// isAlpha determines whether or not the input string is purely alphabetical.
 func isAlpha(s string) bool {
 	legalValues := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 	for _, r := range s {

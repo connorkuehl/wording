@@ -1,9 +1,12 @@
 package wording
 
+// Plays are all of the guesses a player has made.
 type Plays struct {
 	Attempts []string
 }
 
+// Evaluate checks all of the player's attempts and produces a GameState
+// snapshot.
 func (p *Plays) Evaluate(answer string, guessLimit int) *GameState {
 	var ats []Attempt
 	for _, play := range p.Attempts {
