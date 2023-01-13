@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	log "github.com/sirupsen/logrus"
@@ -24,7 +23,6 @@ func main() {
 		dbDSN       string
 		bind        string
 		wordGenSvc  string
-		sentryDSN   string
 	}
 
 	fromEnvOr := func(key, fallback string) string {
@@ -40,25 +38,13 @@ func main() {
 	flag.StringVar(&config.dbDSN, "db-dsn", os.Getenv("WORDING_DB_DSN"), "Postgres DSN")
 	flag.StringVar(&config.bind, "bind-addr", os.Getenv("WORDING_BIND_ADDR"), "Bind address")
 	flag.StringVar(&config.wordGenSvc, "word-gen-svc", os.Getenv("WORDING_WORD_GEN_SVC"), "Word generator API")
-	flag.StringVar(&config.sentryDSN, "sentry-dsn", os.Getenv("WORDING_SENTRY_DSN"), "sentry.io DSN")
 	flag.Parse()
 
 	log.WithFields(log.Fields{
 		"bind-addr":    config.bind,
 		"base-url":     config.baseURL,
 		"word-gen-svc": config.wordGenSvc,
-		"use-sentry":   config.sentryDSN != "",
 	}).Info("starting up")
-
-	if config.sentryDSN != "" {
-		err := sentry.Init(sentry.ClientOptions{
-			Dsn:         config.sentryDSN,
-			Environment: config.environment,
-		})
-		if err != nil {
-			log.Fatal(err)
-		}
-	}
 
 	store, err := store.NewPostgresStore(config.dbDSN)
 	if err != nil {
@@ -75,10 +61,6 @@ func main() {
 	)
 
 	var svc service.Service = service.New(store, adminTokenGenerator, gameTokenGenerator)
-	if config.sentryDSN != "" {
-		log.Info("enabling sentry proxy")
-		svc = service.NewSentry(svc)
-	}
 	srv := server.New(config.baseURL, svc)
 
 	router := chi.NewRouter()
